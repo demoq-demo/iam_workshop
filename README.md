@@ -1322,7 +1322,11 @@ This lab creates an automated monitoring and remediation system that detects IAM
 - **No notifications**: Check SNS topic ARN in Lambda environment variables
 - **Remediation failed**: Review Lambda logs for specific error details
 
-## Lab 6: IAM Access Analyzer Unused Access
+### Lab 5: AI/ML Security
+1. Deploy AI agent infrastructure
+2. Configure cross-account model access
+3. Set up data sharing policies
+4. Create AI-specific archive rules
 
 
 
