@@ -259,6 +259,15 @@ https://aws.amazon.com/blogs/aws/verify-internal-access-to-critical-aws-resource
 ### Internal Access (AWS re:Inforce 2025: announcement)
 ![IAM Access Analyzer - internal access](./diagrams/internal_access.PNG)
 
+### Internal Access (AWS re:Inforce 2025: announcement)
+![IAM Access Analyzer - internal access](./diagrams/internal_access1.PNG)
+``` text
+It uses automated reasoning to collectively evaluate multiple policies, including service control policies (SCPs), resource control policies (RCPs),
+and identity-based policies, and generates findings when a user or role has access to your S3 buckets,
+Amazon DynamoDB tables, or Amazon Relational Database Service (Amazon RDS) snapshots.
+
+```
+
 ### Unused Access 
 ![IAM Access Analyzer - unused access](./diagrams/unused_access.PNG)
 
