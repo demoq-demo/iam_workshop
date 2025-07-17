@@ -173,6 +173,7 @@ graph TD
 ### 4. Comprehensive Use Cases Diagram - Part 3 (Governance & Integration)
 
 ```mermaid
+
 graph TD
     IAMAnalyzer3[IAM Access Analyzer\nCentral Security Hub]
     
@@ -234,10 +235,11 @@ graph TD
     style SOAR fill:#FCE4EC,stroke:#C2185B,stroke-width:1px
     style TicketingSystems fill:#FCE4EC,stroke:#C2185B,stroke-width:1px
     style CustomAPI fill:#FCE4EC,stroke:#C2185B,stroke-width:1px
-```le SIEM fill:#E91E63,stroke:#AD1457,stroke-width:2px,color:#fff
+    style SIEM fill:#E91E63,stroke:#AD1457,stroke-width:2px,color:#fff
     style SOAR fill:#FCE4EC,stroke:#C2185B,stroke-width:1px
     style TicketingSystems fill:#FCE4EC,stroke:#C2185B,stroke-width:1px
     style CustomAPI fill:#FCE4EC,stroke:#C2185B,stroke-width:1px
+
 ```
 
 ## AWS re:Inforce 2025: announcement
