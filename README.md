@@ -1,3 +1,4 @@
+
 # IAM Access Analyzer Workshop - Complete Use Cases Guide
 
 ## Overview
@@ -19,6 +20,217 @@ IAM Access Analyzer uses provable security (mathematical logic) to analyze resou
 
 - **Account Zone** - Your AWS account is the zone of trust
 - **Organization Zone** - Your AWS Organization is the zone of trust
+
+## IAM Access Analyzer Use Cases
+
+### 1. IAM Access Analyzer Features Distribution (Pie Chart)
+
+```mermaid
+pie title IAM Access Analyzer Features
+    "External Access Detection" : 25
+    "Policy Validation" : 20
+    "Unused Access Analysis" : 20
+    "Archive Rules Management" : 15
+    "Continuous Monitoring" : 10
+    "Multi-Account Integration" : 5
+    "Third-Party Integration" : 5
+```
+
+### 2. Comprehensive Use Cases Diagram
+
+```mermaid
+graph TD
+    IAMAnalyzer[IAM Access Analyzer\nCentral Security Hub]
+    
+    subgraph "Development & CI/CD"
+        CICD[CI/CD Pipeline Integration\nAutomated Policy Validation]
+        PreCommit[Pre-commit Hooks\nPolicy Syntax Validation]
+        SecurityGate[Security Gates\nDeployment Blocking]
+        IaC[Infrastructure as Code\nCloudFormation/Terraform]
+    end
+    
+    subgraph "Unused Access Management"
+        UnusedAccess[Unused Access Analysis\n90-day Usage Tracking]
+        IAMUsers[IAM Users\nUnused Permissions]
+        IAMRoles[IAM Roles\nRole Optimization]
+        AccessKeys[Access Keys\nKey Usage Analysis]
+        ServiceAccounts[Service Accounts\nAutomated Cleanup]
+    end
+    
+    subgraph "Least Privilege Implementation"
+        LeastPrivilege[Least Privilege Automation\nPermission Right-sizing]
+        PolicyOptimization[Policy Optimization\nPermission Reduction]
+        RiskAssessment[Risk Assessment\nHigh-Risk Permission Analysis]
+        GradualRollout[Gradual Implementation\nCanary Deployments]
+    end
+    
+    subgraph "External Access Detection"
+        ExternalAccess[External Access Findings\nCross-Account Detection]
+        PublicResources[Public Resources\nS3, Lambda, SQS]
+        CrossAccount[Cross-Account Access\nTrust Relationships]
+        FederatedAccess[Federated Access\nSAML/OIDC Integration]
+    end
+    
+    subgraph "Policy Management"
+        PolicyValidation[Policy Validation\nSyntax & Security Checks]
+        BestPractices[Best Practices\nAWS Security Standards]
+        ComplianceCheck[Compliance Checking\nRegulatory Requirements]
+        PolicyRecommendations[Policy Recommendations\nSecurity Improvements]
+    end
+    
+    subgraph "Monitoring & Alerting"
+        ContinuousMonitoring[Continuous Monitoring\nReal-time Analysis]
+        EventBridge[EventBridge Integration\nEvent-driven Automation]
+        SecurityHub[Security Hub Integration\nCentralized Findings]
+        CustomAlerts[Custom Alerts\nSlack/Email Notifications]
+    end
+    
+    subgraph "Multi-Account Management"
+        OrgWide[Organization-wide Analysis\nCentralized Management]
+        DelegatedAdmin[Delegated Administration\nSecurity Account]
+        CrossAccountFindings[Cross-Account Findings\nConsolidated Reporting]
+        ConsistentPolicies[Consistent Policies\nStandardized Rules]
+    end
+    
+    subgraph "Compliance & Governance"
+        ComplianceReporting[Compliance Reporting\nAudit Documentation]
+        RegulatoryCompliance[Regulatory Compliance\nSOC, PCI, HIPAA]
+        AuditTrail[Audit Trail\nChange Documentation]
+        GovernanceWorkflow[Governance Workflow\nApproval Processes]
+    end
+    
+    subgraph "Third-Party Integration"
+        SIEM[SIEM Integration\nSplunk, QRadar]
+        SOAR[SOAR Platforms\nAutomated Response]
+        TicketingSystems[Ticketing Systems\nServiceNow, Jira]
+        CustomAPI[Custom API Integration\nWebhooks & REST APIs]
+    end
+    
+    %% Central connections
+    IAMAnalyzer --> CICD
+    IAMAnalyzer --> UnusedAccess
+    IAMAnalyzer --> LeastPrivilege
+    IAMAnalyzer --> ExternalAccess
+    IAMAnalyzer --> PolicyValidation
+    IAMAnalyzer --> ContinuousMonitoring
+    IAMAnalyzer --> OrgWide
+    IAMAnalyzer --> ComplianceReporting
+    IAMAnalyzer --> SIEM
+    
+    %% CI/CD connections
+    CICD --> PreCommit
+    CICD --> SecurityGate
+    CICD --> IaC
+    
+    %% Unused Access connections
+    UnusedAccess --> IAMUsers
+    UnusedAccess --> IAMRoles
+    UnusedAccess --> AccessKeys
+    UnusedAccess --> ServiceAccounts
+    
+    %% Least Privilege connections
+    LeastPrivilege --> PolicyOptimization
+    LeastPrivilege --> RiskAssessment
+    LeastPrivilege --> GradualRollout
+    
+    %% External Access connections
+    ExternalAccess --> PublicResources
+    ExternalAccess --> CrossAccount
+    ExternalAccess --> FederatedAccess
+    
+    %% Policy Management connections
+    PolicyValidation --> BestPractices
+    PolicyValidation --> ComplianceCheck
+    PolicyValidation --> PolicyRecommendations
+    
+    %% Monitoring connections
+    ContinuousMonitoring --> EventBridge
+    ContinuousMonitoring --> SecurityHub
+    ContinuousMonitoring --> CustomAlerts
+    
+    %% Multi-Account connections
+    OrgWide --> DelegatedAdmin
+    OrgWide --> CrossAccountFindings
+    OrgWide --> ConsistentPolicies
+    
+    %% Compliance connections
+    ComplianceReporting --> RegulatoryCompliance
+    ComplianceReporting --> AuditTrail
+    ComplianceReporting --> GovernanceWorkflow
+    
+    %% Third-party connections
+    SIEM --> SOAR
+    SIEM --> TicketingSystems
+    SIEM --> CustomAPI
+    
+    %% Styling
+    style IAMAnalyzer fill:#4CAF50,stroke:#2E7D32,stroke-width:3px,color:#fff
+    
+    style CICD fill:#2196F3,stroke:#1565C0,stroke-width:2px,color:#fff
+    style PreCommit fill:#E3F2FD,stroke:#1976D2,stroke-width:1px
+    style SecurityGate fill:#E3F2FD,stroke:#1976D2,stroke-width:1px
+    style IaC fill:#E3F2FD,stroke:#1976D2,stroke-width:1px
+    
+    style UnusedAccess fill:#FF9800,stroke:#E65100,stroke-width:2px,color:#fff
+    style IAMUsers fill:#FFF3E0,stroke:#F57C00,stroke-width:1px
+    style IAMRoles fill:#FFF3E0,stroke:#F57C00,stroke-width:1px
+    style AccessKeys fill:#FFF3E0,stroke:#F57C00,stroke-width:1px
+    style ServiceAccounts fill:#FFF3E0,stroke:#F57C00,stroke-width:1px
+    
+    style LeastPrivilege fill:#9C27B0,stroke:#6A1B9A,stroke-width:2px,color:#fff
+    style PolicyOptimization fill:#F3E5F5,stroke:#8E24AA,stroke-width:1px
+    style RiskAssessment fill:#F3E5F5,stroke:#8E24AA,stroke-width:1px
+    style GradualRollout fill:#F3E5F5,stroke:#8E24AA,stroke-width:1px
+    
+    style ExternalAccess fill:#F44336,stroke:#C62828,stroke-width:2px,color:#fff
+    style PublicResources fill:#FFEBEE,stroke:#D32F2F,stroke-width:1px
+    style CrossAccount fill:#FFEBEE,stroke:#D32F2F,stroke-width:1px
+    style FederatedAccess fill:#FFEBEE,stroke:#D32F2F,stroke-width:1px
+    
+    style PolicyValidation fill:#00BCD4,stroke:#00838F,stroke-width:2px,color:#fff
+    style BestPractices fill:#E0F2F1,stroke:#00695C,stroke-width:1px
+    style ComplianceCheck fill:#E0F2F1,stroke:#00695C,stroke-width:1px
+    style PolicyRecommendations fill:#E0F2F1,stroke:#00695C,stroke-width:1px
+    
+    style ContinuousMonitoring fill:#607D8B,stroke:#37474F,stroke-width:2px,color:#fff
+    style EventBridge fill:#ECEFF1,stroke:#455A64,stroke-width:1px
+    style SecurityHub fill:#ECEFF1,stroke:#455A64,stroke-width:1px
+    style CustomAlerts fill:#ECEFF1,stroke:#455A64,stroke-width:1px
+    
+    style OrgWide fill:#795548,stroke:#3E2723,stroke-width:2px,color:#fff
+    style DelegatedAdmin fill:#EFEBE9,stroke:#5D4037,stroke-width:1px
+    style CrossAccountFindings fill:#EFEBE9,stroke:#5D4037,stroke-width:1px
+    style ConsistentPolicies fill:#EFEBE9,stroke:#5D4037,stroke-width:1px
+    
+    style ComplianceReporting fill:#3F51B5,stroke:#1A237E,stroke-width:2px,color:#fff
+    style RegulatoryCompliance fill:#E8EAF6,stroke:#303F9F,stroke-width:1px
+    style AuditTrail fill:#E8EAF6,stroke:#303F9F,stroke-width:1px
+    style GovernanceWorkflow fill:#E8EAF6,stroke:#303F9F,stroke-width:1px
+    
+    style SIEM fill:#E91E63,stroke:#AD1457,stroke-width:2px,color:#fff
+    style SOAR fill:#FCE4EC,stroke:#C2185B,stroke-width:1px
+    style TicketingSystems fill:#FCE4EC,stroke:#C2185B,stroke-width:1px
+    style CustomAPI fill:#FCE4EC,stroke:#C2185B,stroke-width:1px
+```
+
+## AWS re:Inforce 2025: announcement
+https://aws.amazon.com/blogs/aws/verify-internal-access-to-critical-aws-resources-with-new-iam-access-analyzer-capabilities/
+
+## IAM Access Analyzer Analysis Overview
+
+![IAM Access Analyzer - type of analyzers](./diagrams/type_of_analyzers.PNG)
+
+External Access
+![IAM Access Analyzer - external access](./diagrams/external_access_analysis.PNG)
+
+![IAM Access Analyzer - supported resources - external access](./diagrams/ea_supported_services.PNG)
+
+Internal Access
+![IAM Access Analyzer - internal access](./diagrams/internal_access.PNG)
+
+Unused Access 
+![IAM Access Analyzer - unused access](./diagrams/unused_access.PNG)
+
 
 ## Use Cases and Examples
 
@@ -43,6 +255,19 @@ IAM Access Analyzer uses provable security (mathematical logic) to analyze resou
 ```
 
 **Expected Finding**: Public access to S3 bucket
+
+**🔍 Engineer Notes:**
+- **Why Monitor**: Public S3 buckets can expose sensitive data to the internet, leading to data breaches
+- **Security Risk**: HIGH - Anyone can access bucket contents without authentication
+- **Common Causes**: Misconfigured bucket policies, disabled Block Public Access settings
+- **Business Impact**: Data exposure, compliance violations, potential fines
+
+**📋 Archive Criteria:**
+- **Safe to Archive**: Static website hosting buckets, public documentation, marketing assets
+- **Archive Conditions**: Bucket name contains 'website-', 'public-', 'static-', or 'cdn-'
+- **Security Validation**: Verify bucket contains only non-sensitive public content
+- **Documentation Required**: Business justification for public access documented
+
 **Archive Rule**: Archive if this is an intentional public website bucket
 
 #### Use Case: Cross-Account S3 Access
@@ -66,6 +291,19 @@ IAM Access Analyzer uses provable security (mathematical logic) to analyze resou
 ```
 
 **Expected Finding**: External account access
+
+**🔍 Engineer Notes:**
+- **Why Monitor**: Cross-account access can lead to unauthorized data access if external account is compromised
+- **Security Risk**: MEDIUM-HIGH - External account has broad access to bucket contents
+- **Common Causes**: Business partnerships, data sharing agreements, third-party integrations
+- **Business Impact**: Data exposure to external entities, potential compliance issues
+
+**📋 Archive Criteria:**
+- **Safe to Archive**: Verified trusted partner accounts, documented business relationships
+- **Archive Conditions**: Account ID in approved partner list, signed data sharing agreement exists
+- **Security Validation**: External account has legitimate business need, regular access reviews conducted
+- **Documentation Required**: Partnership agreement, data classification, access justification
+
 **Archive Rule**: Archive if 123456789012 is a trusted partner account
 
 ### 2. IAM Role External Access
@@ -95,6 +333,19 @@ IAM Access Analyzer uses provable security (mathematical logic) to analyze resou
 ```
 
 **Expected Finding**: External account can assume role
+
+**🔍 Engineer Notes:**
+- **Why Monitor**: Cross-account role assumption grants external entities access to your AWS resources
+- **Security Risk**: HIGH - External account can perform actions based on role permissions
+- **Common Causes**: Third-party service integrations, partner access, vendor relationships
+- **Business Impact**: Potential privilege escalation, unauthorized resource access, compliance violations
+
+**📋 Archive Criteria:**
+- **Safe to Archive**: Established vendor relationships, documented service integrations
+- **Archive Conditions**: External ID present, trusted vendor account, limited role permissions
+- **Security Validation**: Role follows least privilege, conditions restrict access, regular audits performed
+- **Documentation Required**: Vendor agreement, security assessment, access review schedule
+
 **Archive Rule**: Archive if this is for a trusted third-party service
 
 #### Use Case: SAML Federation Access
@@ -122,6 +373,19 @@ IAM Access Analyzer uses provable security (mathematical logic) to analyze resou
 ```
 
 **Expected Finding**: Federated access via SAML
+
+**🔍 Engineer Notes:**
+- **Why Monitor**: SAML federation allows external identity providers to access AWS resources
+- **Security Risk**: MEDIUM - Depends on external IdP security and SAML assertion validation
+- **Common Causes**: Corporate SSO integration, partner federation, identity provider setup
+- **Business Impact**: Potential unauthorized access if IdP is compromised, identity spoofing risks
+
+**📋 Archive Criteria:**
+- **Safe to Archive**: Corporate identity providers, established SSO solutions
+- **Archive Conditions**: Known corporate SAML provider, proper conditions in trust policy
+- **Security Validation**: IdP security validated, SAML assertions properly configured, MFA enforced
+- **Documentation Required**: IdP security assessment, federation agreement, user access controls
+
 **Archive Rule**: Archive for known corporate SAML providers
 
 ### 3. Lambda Function External Access
@@ -148,6 +412,19 @@ IAM Access Analyzer uses provable security (mathematical logic) to analyze resou
 ```
 
 **Expected Finding**: External service access (if S3 bucket is external)
+
+**🔍 Engineer Notes:**
+- **Why Monitor**: Lambda functions with external access can be invoked by unauthorized sources
+- **Security Risk**: LOW-MEDIUM - AWS service principals are generally safe, but source validation is critical
+- **Common Causes**: Event-driven architectures, S3 triggers, API Gateway integrations
+- **Business Impact**: Potential function abuse, unexpected costs, resource exhaustion
+
+**📋 Archive Criteria:**
+- **Safe to Archive**: AWS service principals with proper source ARN restrictions
+- **Archive Conditions**: Principal is AWS service, SourceArn condition present and specific
+- **Security Validation**: Source ARN points to trusted resource, function has minimal permissions
+- **Documentation Required**: Architecture documentation, event source validation, cost monitoring
+
 **Archive Rule**: Archive for AWS service principals
 
 ### 4. KMS Key External Access
@@ -176,6 +453,19 @@ IAM Access Analyzer uses provable security (mathematical logic) to analyze resou
 ```
 
 **Expected Finding**: External account KMS access
+
+**🔍 Engineer Notes:**
+- **Why Monitor**: KMS key sharing allows external accounts to decrypt sensitive data
+- **Security Risk**: HIGH - External access to encryption keys can compromise data confidentiality
+- **Common Causes**: Cross-account data sharing, backup encryption, partner data exchange
+- **Business Impact**: Data exposure, encryption key compromise, compliance violations
+
+**📋 Archive Criteria:**
+- **Safe to Archive**: Verified trusted partners with legitimate encryption needs
+- **Archive Conditions**: Partner in approved list, limited key actions, data sharing agreement
+- **Security Validation**: Partner security assessment completed, key usage monitored, regular access review
+- **Documentation Required**: Data sharing agreement, encryption requirements, partner security validation
+
 **Archive Rule**: Archive for trusted encryption partners
 
 ### 5. SQS Queue External Access
@@ -201,6 +491,19 @@ IAM Access Analyzer uses provable security (mathematical logic) to analyze resou
 ```
 
 **Expected Finding**: External account SQS access
+
+**🔍 Engineer Notes:**
+- **Why Monitor**: SQS queue access allows external accounts to send/receive messages
+- **Security Risk**: MEDIUM - External accounts can inject malicious messages or consume sensitive data
+- **Common Causes**: Microservices integration, partner API communication, event-driven architectures
+- **Business Impact**: Message tampering, data leakage, service disruption, unexpected costs
+
+**📋 Archive Criteria:**
+- **Safe to Archive**: Established integration partners, documented message flows
+- **Archive Conditions**: Partner in approved list, limited queue actions, message validation in place
+- **Security Validation**: Message encryption enabled, dead letter queues configured, access patterns monitored
+- **Documentation Required**: Integration documentation, message schema validation, partner agreement
+
 **Archive Rule**: Archive for integration partner accounts
 
 ### 6. Secrets Manager External Access
@@ -226,7 +529,20 @@ IAM Access Analyzer uses provable security (mathematical logic) to analyze resou
 ```
 
 **Expected Finding**: External access to secrets
-**Archive Rule**: Archive for trusted service integrations
+
+**🔍 Engineer Notes:**
+- **Why Monitor**: Secrets Manager contains highly sensitive credentials and API keys
+- **Security Risk**: CRITICAL - External access to secrets can compromise entire infrastructure
+- **Common Causes**: Service integrations, partner API access, shared credentials for integrations
+- **Business Impact**: Complete system compromise, credential theft, unauthorized system access
+
+**📋 Archive Criteria:**
+- **Safe to Archive**: RARELY - Only for highly trusted, security-validated partners
+- **Archive Conditions**: Specific role (not root), limited secret access, strong justification
+- **Security Validation**: Partner security audit passed, secret rotation enabled, access logging active
+- **Documentation Required**: Security assessment, incident response plan, regular access review
+
+**Archive Rule**: Archive for trusted service integrationse Rule**: Archive for trusted service integrations
 
 ## Archive Rules Examples
 
@@ -277,7 +593,7 @@ IAM Access Analyzer uses provable security (mathematical logic) to analyze resou
         - ':saml-provider/OktaSAML'
 ```
 
-## Testing Scenarios
+## Other Scenarios
 
 ### Scenario 1: AI/ML Workload Security
 **Setup**: Deploy AI agent with S3 data bucket, Lambda functions, and cross-account model access
@@ -303,7 +619,8 @@ IAM Access Analyzer uses provable security (mathematical logic) to analyze resou
 **Expected**: Findings for analytics account access
 **Archive**: Rules for trusted analytics partners
 
-## Workshop Labs
+
+# Workshop Labs 
 
 ### Lab 1: Basic Setup - Step by Step Console Instructions
 
@@ -1468,6 +1785,257 @@ graph TD
     style API fill:#ccffcc
 ```
 
+### IAM Access Analyzer in CI/CD Pipeline
+
+```mermaid
+graph TD
+    subgraph "Development Environment"
+        Dev[Developer\nCode Changes]
+        IDE[IDE/Local Testing\nPolicy Validation]
+    end
+    
+    subgraph "CI/CD Pipeline"
+        SCM[Source Control\nGit Repository]
+        Build[Build Stage\nCode Compilation]
+        PolicyScan[Policy Analysis\nIAM Access Analyzer API]
+        SecurityGate[Security Gate\nPolicy Validation]
+        Deploy[Deployment Stage\nInfrastructure as Code]
+    end
+    
+    subgraph "AWS Environment"
+        subgraph "Security Tools"
+            IAMAnalyzer[IAM Access Analyzer\nPolicy Validation API]
+            PolicyValidator[Policy Validator\nSyntax & Security Checks]
+            UnusedAccess[Unused Access\nPermission Optimization]
+        end
+        
+        subgraph "Target Environment"
+            IAMRoles[IAM Roles\nLambda Execution Roles]
+            Policies[IAM Policies\nResource-based Policies]
+            Resources[AWS Resources\nS3, Lambda, DynamoDB]
+        end
+    end
+    
+    subgraph "Feedback Loop"
+        Reports[Security Reports\nPolicy Findings]
+        Notifications[Notifications\nSlack/Email Alerts]
+        Dashboard[Security Dashboard\nCompliance Metrics]
+    end
+    
+    %% Development Flow
+    Dev -->|Commits Code| SCM
+    IDE -->|Pre-commit Validation| PolicyValidator
+    
+    %% CI/CD Flow
+    SCM -->|Triggers Build| Build
+    Build -->|IAM Policies/CloudFormation| PolicyScan
+    PolicyScan -->|Validates Policies| IAMAnalyzer
+    
+    %% Security Gate
+    IAMAnalyzer -->|Policy Results| SecurityGate
+    SecurityGate -->|Pass| Deploy
+    SecurityGate -->|Fail| Reports
+    
+    %% Deployment
+    Deploy -->|Creates| IAMRoles
+    Deploy -->|Attaches| Policies
+    Deploy -->|Provisions| Resources
+    
+    %% Post-Deployment Analysis
+    IAMRoles -->|Analyzes Usage| UnusedAccess
+    Policies -->|Validates Security| IAMAnalyzer
+    
+    %% Feedback
+    IAMAnalyzer -->|Generates| Reports
+    Reports -->|Sends| Notifications
+    Reports -->|Updates| Dashboard
+    
+    %% Continuous Improvement
+    Dashboard -->|Insights| Dev
+    Notifications -->|Alerts| Dev
+    
+    style Dev fill:#e1f5fe
+    style SCM fill:#f3e5f5
+    style PolicyScan fill:#fff3e0
+    style SecurityGate fill:#ffebee
+    style IAMAnalyzer fill:#e8f5e8
+    style Deploy fill:#e0f2f1
+    style Reports fill:#fce4ec
+    style Dashboard fill:#e3f2fd
+```
+
+#### CI/CD Integration Notes for Engineers
+
+**Pre-Deployment Security Checks:**
+- **Policy Validation API**: Integrate Access Analyzer validation into build pipeline
+- **Syntax Checking**: Validate JSON policy syntax before deployment
+- **Security Scanning**: Detect overly permissive policies early
+- **Compliance Verification**: Ensure policies meet organizational standards
+
+**Pipeline Integration Points:**
+1. **Pre-commit Hooks**: Validate policies in IDE before commit
+2. **Build Stage**: Automated policy analysis during CI/CD
+3. **Security Gate**: Block deployments with policy violations
+4. **Post-deployment**: Continuous monitoring of deployed policies
+
+**Implementation Benefits:**
+- **Shift-Left Security**: Catch policy issues early in development
+- **Automated Compliance**: Consistent policy validation across teams
+- **Reduced Risk**: Prevent deployment of insecure configurations
+- **Faster Feedback**: Immediate policy validation results
+
+### Automated Least Privilege for Lambda Workloads
+
+```mermaid
+graph TD
+    subgraph "Lambda Development Lifecycle"
+        DevCode[Developer\nWrites Lambda Code]
+        InitialPolicy[Initial IAM Policy\nBroad Permissions]
+        Deploy[Deploy Lambda\nWith Initial Policy]
+    end
+    
+    subgraph "Usage Monitoring Phase"
+        Lambda[Lambda Function\nExecuting in Production]
+        CloudTrail[AWS CloudTrail\nAPI Call Logging]
+        UsageData[Usage Data Collection\n90-day Analysis Period]
+    end
+    
+    subgraph "IAM Access Analyzer Analysis"
+        UnusedAnalysis[Unused Access Analysis\nIdentify Unused Permissions]
+        PolicyRecommendations[Policy Recommendations\nLeast Privilege Suggestions]
+        RiskAssessment[Risk Assessment\nHigh-Risk Unused Permissions]
+    end
+    
+    subgraph "Automated Optimization"
+        PolicyGenerator[Automated Policy Generator\nCreate Optimized Policy]
+        ValidationEngine[Policy Validation\nTest New Policy]
+        GradualRollout[Gradual Rollout\nCanary Deployment]
+    end
+    
+    subgraph "Continuous Monitoring"
+        HealthCheck[Health Monitoring\nFunction Performance]
+        ErrorTracking[Error Tracking\nAccess Denied Monitoring]
+        FeedbackLoop[Feedback Loop\nPolicy Adjustment]
+    end
+    
+    subgraph "Governance & Compliance"
+        ApprovalWorkflow[Approval Workflow\nSecurity Team Review]
+        ComplianceReport[Compliance Reporting\nLeast Privilege Metrics]
+        AuditTrail[Audit Trail\nPolicy Change History]
+    end
+    
+    %% Development Flow
+    DevCode -->|Creates| InitialPolicy
+    InitialPolicy -->|Deploys| Deploy
+    Deploy -->|Runs| Lambda
+    
+    %% Monitoring Flow
+    Lambda -->|Generates| CloudTrail
+    CloudTrail -->|Collects| UsageData
+    UsageData -->|Feeds| UnusedAnalysis
+    
+    %% Analysis Flow
+    UnusedAnalysis -->|Identifies| PolicyRecommendations
+    PolicyRecommendations -->|Assesses| RiskAssessment
+    RiskAssessment -->|Triggers| PolicyGenerator
+    
+    %% Optimization Flow
+    PolicyGenerator -->|Creates| ValidationEngine
+    ValidationEngine -->|Tests| GradualRollout
+    GradualRollout -->|Monitors| HealthCheck
+    
+    %% Monitoring Flow
+    HealthCheck -->|Tracks| ErrorTracking
+    ErrorTracking -->|Adjusts| FeedbackLoop
+    FeedbackLoop -->|Updates| PolicyGenerator
+    
+    %% Governance Flow
+    PolicyGenerator -->|Requires| ApprovalWorkflow
+    ApprovalWorkflow -->|Generates| ComplianceReport
+    ComplianceReport -->|Maintains| AuditTrail
+    
+    %% Continuous Improvement
+    AuditTrail -->|Informs| DevCode
+    ComplianceReport -->|Guides| DevCode
+    
+    style DevCode fill:#e3f2fd
+    style InitialPolicy fill:#fff3e0
+    style Lambda fill:#e8f5e8
+    style CloudTrail fill:#f1f8e9
+    style UnusedAnalysis fill:#e0f2f1
+    style PolicyRecommendations fill:#e8eaf6
+    style PolicyGenerator fill:#fce4ec
+    style ValidationEngine fill:#fff8e1
+    style GradualRollout fill:#e0f7fa
+    style HealthCheck fill:#f3e5f5
+    style ApprovalWorkflow fill:#ffebee
+    style ComplianceReport fill:#e1f5fe
+```
+
+#### Automated Least Privilege Implementation Notes
+
+**Phase 1: Initial Deployment (Weeks 1-2)**
+- Deploy Lambda with **broad permissions** for functionality testing
+- Enable **CloudTrail logging** for all API calls
+- Set up **monitoring infrastructure** for usage tracking
+
+**Phase 2: Usage Analysis (Weeks 3-14)**
+- **90-day monitoring period** to capture all usage patterns
+- **Seasonal usage consideration** for periodic functions
+- **Emergency access patterns** documentation
+
+**Phase 3: Automated Analysis (Week 15)**
+- **Unused Access Analysis**: Identify never-used permissions
+- **Risk-based Prioritization**: Focus on high-risk unused permissions
+- **Policy Recommendations**: Generate least-privilege policy
+
+**Phase 4: Gradual Implementation (Weeks 16-18)**
+- **Canary Deployment**: Test optimized policy on subset of traffic
+- **Health Monitoring**: Track function performance and errors
+- **Rollback Capability**: Immediate revert if issues detected
+
+**Key Automation Components:**
+
+**1. Usage Data Collection:**
+```python
+# Automated usage analysis
+usage_analyzer = {
+    'data_source': 'CloudTrail + Access Analyzer',
+    'analysis_period': '90 days',
+    'granularity': 'action-level',
+    'risk_assessment': 'automated'
+}
+```
+
+**2. Policy Generation:**
+```python
+# Automated policy optimization
+optimized_policy = {
+    'used_permissions': ['s3:GetObject', 'dynamodb:PutItem'],
+    'unused_permissions': ['s3:DeleteObject', 'dynamodb:DeleteItem'],
+    'risk_reduction': '75%',
+    'compliance_score': 'improved'
+}
+```
+
+**3. Continuous Monitoring:**
+```python
+# Health monitoring post-optimization
+monitoring_metrics = {
+    'function_errors': 'CloudWatch Alarms',
+    'access_denied': 'CloudTrail Analysis',
+    'performance_impact': 'Lambda Insights',
+    'rollback_trigger': 'Automated'
+}
+```
+
+**Benefits of Automated Least Privilege:**
+- **Security Improvement**: 60-80% reduction in unused permissions
+- **Compliance**: Automated least privilege implementation
+- **Operational Efficiency**: Reduced manual policy management
+- **Risk Reduction**: Minimized attack surface
+- **Audit Readiness**: Complete policy change documentation
+
 ### Multi-Account Setup Benefits
 
 **Organization-Wide Visibility:**
@@ -1540,10 +2108,6 @@ graph TD
 - Centralized monitoring and reporting
 - Cross-account finding correlation
 
-## AWS re:Inforce 2025: announcement
-https://aws.amazon.com/blogs/aws/verify-internal-access-to-critical-aws-resources-with-new-iam-access-analyzer-capabilities/
-
-AWS IAM Analyzer Unused Access
 
 
 
