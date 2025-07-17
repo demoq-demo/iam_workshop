@@ -432,17 +432,12 @@ IAM Access Analyzer uses provable security (mathematical logic) to analyze resou
    - Click **Archived** tab
    - See findings that match your archive rule
 
-3. **Test Public Access**
-   - Try accessing your bucket object via public URL:
-   - `https://YOUR-BUCKET-NAME.s3.amazonaws.com/test.txt`
-   - Should be accessible without authentication
-
 #### Expected Results
 
 ✅ **Access Analyzer Created**: Status shows Active
 ✅ **S3 Bucket Finding**: Shows public access to bucket
 ✅ **Archive Rule Working**: Website buckets automatically archived
-✅ **Public Access Confirmed**: Files accessible via public URL
+
 
 #### Cleanup (Optional)
 
@@ -589,23 +584,931 @@ This lab creates an IAM role that can be assumed by an external AWS account, whi
 - **External ID issues**: Ensure condition syntax is correct in trust policy
 
 
-### Lab 3: Policy Validation
-1. Create IAM policy with potential issues
-2. Use Access Analyzer policy validation
-3. Review and fix policy recommendations
-4. Test policy changes
+### Lab 3: Policy Validation - Step by Step Console Instructions
 
-### Lab 4: Automated Monitoring
-1. Set up EventBridge rules for Access Analyzer findings
-2. Create Lambda function for automated responses
-3. Test finding notifications and remediation
-4. Monitor security posture over time
+#### Overview
+IAM Access Analyzer Policy Validation helps you validate IAM policies against AWS best practices and security standards before deployment. This lab demonstrates how to create a problematic policy, use policy validation to identify issues, fix them, and retest.
 
-### Lab 5: AI/ML Security
-1. Deploy AI agent infrastructure
-2. Configure cross-account model access
-3. Set up data sharing policies
-4. Create AI-specific archive rules
+#### What is Policy Validation?
+
+**Policy Validation Features:**
+- **Syntax Validation**: Checks for JSON syntax errors
+- **Security Warnings**: Identifies overly permissive policies
+- **Best Practice Recommendations**: Suggests improvements
+- **Resource-Based Policy Analysis**: Validates bucket policies, trust policies, etc.
+- **Actionable Suggestions**: Provides specific fixes
+
+**Common Issues Detected:**
+- Wildcard permissions (`*`)
+- Missing conditions
+- Overly broad resource access
+- Insecure principal configurations
+- Policy size and complexity issues
+
+#### Step 1: Create Problematic IAM Policy
+
+1. **Navigate to IAM Policies**
+   - Go to **IAM** > **Policies**
+   - Click **Create policy**
+   - Click **JSON** tab
+
+2. **Paste Problematic Policy**
+   ```json
+   {
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Effect": "Allow",
+         "Action": "*",
+         "Resource": "*"
+       },
+       {
+         "Effect": "Allow",
+         "Action": [
+           "s3:GetObject",
+           "s3:PutObject",
+           "s3:DeleteObject"
+         ],
+         "Resource": "arn:aws:s3:::*/*"
+       },
+       {
+         "Effect": "Allow",
+         "Action": "iam:*",
+         "Resource": "*"
+       },
+       {
+         "Effect": "Allow",
+         "Action": [
+           "dynamodb:GetItem",
+           "dynamodb:PutItem",
+           "dynamodb:DeleteItem"
+         ],
+         "Resource": "arn:aws:dynamodb:*:*:table/*"
+       }
+     ]
+   }
+   ```
+
+3. **Attempt to Create Policy**
+   - Click **Next: Tags** (skip tags)
+   - Click **Next: Review**
+   - **Policy name**: `WorkshopProblematicPolicy`
+   - **Description**: `Workshop policy with security issues for validation testing`
+   - Click **Create policy**
+
+#### Step 2: Use Access Analyzer Policy Validation
+
+1. **Navigate to Policy Validation**
+   - Go to **IAM** > **Access analyzer**
+   - Click **Policy validation** tab
+   - Click **Validate policy**
+
+2. **Select Policy Type**
+   - **Policy type**: Select **Identity-based policy**
+   - **Policy use**: Select **Existing policy**
+   - **Policy**: Select `WorkshopProblematicPolicy`
+   - Click **Validate policy**
+
+3. **Alternative: Validate New Policy**
+   - **Policy type**: Select **Identity-based policy**
+   - **Policy use**: Select **New policy**
+   - Paste the problematic policy JSON
+   - Click **Validate policy**
+
+#### Step 3: Review Validation Results
+
+**Expected Validation Findings:**
+
+1. **Critical Security Warning**
+   - **Issue**: `"Action": "*"` grants all permissions
+   - **Severity**: ERROR
+   - **Message**: "Using '*' for actions grants all permissions"
+   - **Recommendation**: Specify only required actions
+
+2. **IAM Permissions Warning**
+   - **Issue**: `"iam:*"` allows IAM management
+   - **Severity**: WARNING
+   - **Message**: "Granting IAM permissions can be dangerous"
+   - **Recommendation**: Limit IAM actions or add conditions
+
+3. **Resource Wildcard Warning**
+   - **Issue**: Multiple `"Resource": "*"` statements
+   - **Severity**: WARNING
+   - **Message**: "Using '*' for resources grants broad access"
+   - **Recommendation**: Specify specific resource ARNs
+
+4. **S3 Bucket Access Warning**
+   - **Issue**: `"arn:aws:s3:::*/*"` allows access to all buckets
+   - **Severity**: WARNING
+   - **Message**: "Broad S3 access detected"
+   - **Recommendation**: Limit to specific buckets
+
+#### Step 4: Create Fixed Policy
+
+1. **Create New Policy with Fixes**
+   - Go to **IAM** > **Policies** > **Create policy**
+   - Click **JSON** tab
+   - Paste the fixed policy:
+
+   **Fixed Policy JSON:**
+   ```json
+   {
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Effect": "Allow",
+         "Action": [
+           "s3:GetObject",
+           "s3:PutObject"
+         ],
+         "Resource": [
+           "arn:aws:s3:::workshop-data-bucket/*",
+           "arn:aws:s3:::workshop-logs-bucket/*"
+         ],
+         "Condition": {
+           "StringEquals": {
+             "s3:x-amz-server-side-encryption": "AES256"
+           }
+         }
+       },
+       {
+         "Effect": "Allow",
+         "Action": [
+           "dynamodb:GetItem",
+           "dynamodb:PutItem",
+           "dynamodb:Query"
+         ],
+         "Resource": [
+           "arn:aws:dynamodb:us-east-1:*:table/workshop-table",
+           "arn:aws:dynamodb:us-east-1:*:table/workshop-table/index/*"
+         ]
+       },
+       {
+         "Effect": "Allow",
+         "Action": [
+           "logs:CreateLogGroup",
+           "logs:CreateLogStream",
+           "logs:PutLogEvents"
+         ],
+         "Resource": "arn:aws:logs:us-east-1:*:log-group:/workshop/*"
+       }
+     ]
+   }
+   ```
+
+2. **Save Fixed Policy**
+   - **Policy name**: `WorkshopSecurePolicy`
+   - **Description**: `Workshop policy following security best practices`
+   - Click **Create policy**
+
+#### Step 5: Validate Fixed Policy
+
+1. **Run Validation Again**
+   - Go to **IAM** > **Access analyzer** > **Policy validation**
+   - **Policy type**: Identity-based policy
+   - **Policy**: Select `WorkshopSecurePolicy`
+   - Click **Validate policy**
+
+2. **Review Improved Results**
+   - Should show **No findings** or minimal warnings
+   - Any remaining suggestions should be informational
+   - Policy should pass security validation
+
+#### Step 6: Compare Policies Side-by-Side
+
+**Problematic Policy Issues:**
+- ❌ `"Action": "*"` - Grants all AWS permissions
+- ❌ `"Resource": "*"` - Allows access to all resources
+- ❌ `"iam:*"` - Dangerous IAM permissions
+- ❌ No conditions - No access restrictions
+- ❌ Overly broad S3 and DynamoDB access
+
+**Fixed Policy Improvements:**
+- ✅ **Specific Actions**: Only required permissions
+- ✅ **Specific Resources**: Limited to workshop resources
+- ✅ **Conditions Added**: Encryption requirements
+- ✅ **No IAM Permissions**: Removed dangerous IAM access
+- ✅ **Least Privilege**: Minimal required access
+
+#### Step 7: Test Resource-Based Policy Validation
+
+1. **Create S3 Bucket Policy**
+   - Create test S3 bucket: `workshop-policy-test-bucket`
+   - Add problematic bucket policy:
+
+   ```json
+   {
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Effect": "Allow",
+         "Principal": "*",
+         "Action": "s3:*",
+         "Resource": [
+           "arn:aws:s3:::workshop-policy-test-bucket",
+           "arn:aws:s3:::workshop-policy-test-bucket/*"
+         ]
+       }
+     ]
+   }
+   ```
+
+2. **Validate Bucket Policy**
+   - Go to **Access analyzer** > **Policy validation**
+   - **Policy type**: Select **Resource-based policy**
+   - **Resource type**: Select **Amazon S3 bucket**
+   - Paste the bucket policy JSON
+   - Click **Validate policy**
+
+3. **Review Bucket Policy Findings**
+   - Should flag public access (`"Principal": "*"`)
+   - Should warn about broad actions (`"s3:*"`)
+   - Should suggest specific principals and actions
+
+#### Expected Results
+
+✅ **Problematic Policy**: Multiple security warnings and errors
+✅ **Fixed Policy**: Clean validation with no critical issues
+✅ **Understanding**: Clear view of security improvements
+✅ **Best Practices**: Applied least privilege and conditions
+✅ **Resource Policies**: Validated S3 bucket policy issues
+
+#### Key Learning Points
+
+**Policy Validation Benefits:**
+- **Proactive Security**: Catch issues before deployment
+- **Best Practice Guidance**: Learn secure policy patterns
+- **Compliance**: Meet security standards
+- **Risk Reduction**: Prevent overly permissive access
+
+**Common Fixes Applied:**
+- Replace wildcards with specific values
+- Add conditions for additional security
+- Remove unnecessary IAM permissions
+- Limit resource scope to required resources
+- Use least privilege principle
+
+#### Cleanup
+
+1. **Delete Test Policies**
+   - Delete `WorkshopProblematicPolicy`
+   - Keep `WorkshopSecurePolicy` for reference
+
+2. **Delete Test S3 Bucket**
+   - Empty and delete `workshop-policy-test-bucket`
+
+#### Troubleshooting
+
+- **Policy too large**: Break into smaller, focused policies
+- **Validation not working**: Check JSON syntax first
+- **No findings shown**: Policy may already be secure
+- **Can't save policy**: Fix critical errors before saving
+
+### Lab 4: Automated Monitoring - Step by Step Console Instructions
+
+#### Overview
+This lab creates an automated monitoring and remediation system that detects IAM role trust policy changes to external principals and automatically remediates them. We'll use EventBridge to monitor CloudTrail events and Lambda to automatically fix unauthorized trust policy changes.
+
+#### What We're Building
+
+**Monitoring System Components:**
+- **EventBridge Rule**: Monitors IAM role trust policy changes
+- **Lambda Function**: Automatically remediates unauthorized changes
+- **CloudTrail Integration**: Captures IAM API calls
+- **SNS Notifications**: Alerts security team of actions taken
+
+**Security Scenario:**
+- Detect when IAM role trust policy is modified
+- Check if new principal is outside zone of trust
+- Automatically revert unauthorized changes
+- Send notification to security team
+
+#### Step 1: Create Lambda Execution Role
+
+1. **Navigate to IAM Roles**
+   - Go to **IAM** > **Roles** > **Create role**
+   - Select **AWS service** > **Lambda**
+   - Click **Next**
+
+2. **Attach Permissions**
+   - Search and select: `AWSLambdaBasicExecutionRole`
+   - Click **Next**
+
+3. **Create Custom Policy**
+   - Click **Create policy** (opens new tab)
+   - Click **JSON** tab
+   - Paste the following policy:
+
+   ```json
+   {
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Effect": "Allow",
+         "Action": [
+           "iam:GetRole",
+           "iam:UpdateAssumeRolePolicy",
+           "iam:ListRoles"
+         ],
+         "Resource": "*"
+       },
+       {
+         "Effect": "Allow",
+         "Action": [
+           "sns:Publish"
+         ],
+         "Resource": "*"
+       },
+       {
+         "Effect": "Allow",
+         "Action": [
+           "logs:CreateLogGroup",
+           "logs:CreateLogStream",
+           "logs:PutLogEvents"
+         ],
+         "Resource": "*"
+       }
+     ]
+   }
+   ```
+
+4. **Save Policy**
+   - **Policy name**: `IAMTrustPolicyRemediationPolicy`
+   - Click **Create policy**
+   - Return to role creation tab
+   - Refresh and select the new policy
+
+5. **Complete Role Creation**
+   - **Role name**: `IAMTrustPolicyRemediationRole`
+   - **Description**: `Role for Lambda function to remediate IAM trust policy changes`
+   - Click **Create role**
+
+#### Step 2: Create SNS Topic for Notifications
+
+1. **Navigate to SNS**
+   - Go to **SNS** > **Topics** > **Create topic**
+   - **Type**: Standard
+   - **Name**: `iam-trust-policy-alerts`
+   - Click **Create topic**
+
+2. **Create Subscription**
+   - Click **Create subscription**
+   - **Protocol**: Email
+   - **Endpoint**: Your email address
+   - Click **Create subscription**
+   - Check email and confirm subscription
+
+#### Step 3: Create Lambda Function
+
+1. **Navigate to Lambda**
+   - Go to **Lambda** > **Functions** > **Create function**
+   - Select **Author from scratch**
+
+2. **Configure Function**
+   - **Function name**: `iam-trust-policy-remediation`
+   - **Runtime**: Python 3.11
+   - **Execution role**: Use existing role
+   - **Existing role**: `IAMTrustPolicyRemediationRole`
+   - Click **Create function**
+
+3. **Add Function Code**
+   - Replace the default code with:
+
+   ```python
+   import json
+   import boto3
+   import logging
+   from datetime import datetime
+   
+   # Configure logging
+   logger = logging.getLogger()
+   logger.setLevel(logging.INFO)
+   
+   # Initialize AWS clients
+   iam = boto3.client('iam')
+   sns = boto3.client('sns')
+   
+   # Trusted account IDs (zone of trust)
+   TRUSTED_ACCOUNTS = [
+       '123456789012',  # Replace with your trusted account IDs
+       '987654321098'
+   ]
+   
+   # SNS Topic ARN for notifications
+   SNS_TOPIC_ARN = 'arn:aws:sns:us-east-1:YOUR-ACCOUNT-ID:iam-trust-policy-alerts'
+   
+   def lambda_handler(event, context):
+       logger.info(f"Received event: {json.dumps(event)}")
+       
+       try:
+           # Parse CloudTrail event
+           detail = event.get('detail', {})
+           event_name = detail.get('eventName')
+           
+           # Only process UpdateAssumeRolePolicy events
+           if event_name != 'UpdateAssumeRolePolicy':
+               logger.info(f"Ignoring event: {event_name}")
+               return {'statusCode': 200, 'body': 'Event ignored'}
+           
+           # Extract role information
+           request_parameters = detail.get('requestParameters', {})
+           role_name = request_parameters.get('roleName')
+           new_policy_document = request_parameters.get('policyDocument')
+           
+           if not role_name or not new_policy_document:
+               logger.error("Missing role name or policy document")
+               return {'statusCode': 400, 'body': 'Missing required parameters'}
+           
+           logger.info(f"Processing trust policy change for role: {role_name}")
+           
+           # Parse the new trust policy
+           if isinstance(new_policy_document, str):
+               policy_doc = json.loads(new_policy_document)
+           else:
+               policy_doc = new_policy_document
+           
+           # Check for unauthorized principals
+           unauthorized_principals = check_unauthorized_principals(policy_doc)
+           
+           if unauthorized_principals:
+               logger.warning(f"Unauthorized principals detected: {unauthorized_principals}")
+               
+               # Get the original policy (from a backup or previous version)
+               remediated_policy = create_remediated_policy(policy_doc, unauthorized_principals)
+               
+               # Update the role with remediated policy
+               update_role_trust_policy(role_name, remediated_policy)
+               
+               # Send notification
+               send_notification(role_name, unauthorized_principals, detail)
+               
+               return {
+                   'statusCode': 200,
+                   'body': json.dumps({
+                       'message': 'Trust policy remediated',
+                       'role': role_name,
+                       'unauthorized_principals': unauthorized_principals
+                   })
+               }
+           else:
+               logger.info("No unauthorized principals found")
+               return {'statusCode': 200, 'body': 'No remediation needed'}
+               
+       except Exception as e:
+           logger.error(f"Error processing event: {str(e)}")
+           return {'statusCode': 500, 'body': f'Error: {str(e)}'}
+   
+   def check_unauthorized_principals(policy_doc):
+       """Check for principals outside the zone of trust"""
+       unauthorized = []
+       
+       statements = policy_doc.get('Statement', [])
+       if not isinstance(statements, list):
+           statements = [statements]
+       
+       for statement in statements:
+           principal = statement.get('Principal', {})
+           
+           if isinstance(principal, dict):
+               aws_principals = principal.get('AWS', [])
+               if isinstance(aws_principals, str):
+                   aws_principals = [aws_principals]
+               
+               for aws_principal in aws_principals:
+                   if not is_trusted_principal(aws_principal):
+                       unauthorized.append(aws_principal)
+           
+       return unauthorized
+   
+   def is_trusted_principal(principal):
+       """Check if principal is in the zone of trust"""
+       # Check for current account
+       if ':root' in principal:
+           account_id = principal.split(':')[4]
+           return account_id in TRUSTED_ACCOUNTS
+       
+       # Check for specific roles in trusted accounts
+       if ':role/' in principal:
+           account_id = principal.split(':')[4]
+           return account_id in TRUSTED_ACCOUNTS
+       
+       return False
+   
+   def create_remediated_policy(policy_doc, unauthorized_principals):
+       """Remove unauthorized principals from policy"""
+       remediated_policy = json.loads(json.dumps(policy_doc))  # Deep copy
+       
+       statements = remediated_policy.get('Statement', [])
+       if not isinstance(statements, list):
+           statements = [statements]
+           remediated_policy['Statement'] = statements
+       
+       for statement in statements:
+           principal = statement.get('Principal', {})
+           
+           if isinstance(principal, dict) and 'AWS' in principal:
+               aws_principals = principal['AWS']
+               if isinstance(aws_principals, str):
+                   aws_principals = [aws_principals]
+               
+               # Remove unauthorized principals
+               trusted_principals = [p for p in aws_principals if p not in unauthorized_principals]
+               
+               if trusted_principals:
+                   principal['AWS'] = trusted_principals[0] if len(trusted_principals) == 1 else trusted_principals
+               else:
+                   # If no trusted principals remain, remove the statement
+                   statements.remove(statement)
+       
+       return remediated_policy
+   
+   def update_role_trust_policy(role_name, policy_doc):
+       """Update IAM role trust policy"""
+       try:
+           response = iam.update_assume_role_policy(
+               RoleName=role_name,
+               PolicyDocument=json.dumps(policy_doc)
+           )
+           logger.info(f"Successfully updated trust policy for role: {role_name}")
+           return response
+       except Exception as e:
+           logger.error(f"Failed to update trust policy for role {role_name}: {str(e)}")
+           raise
+   
+   def send_notification(role_name, unauthorized_principals, event_detail):
+       """Send SNS notification about remediation"""
+       try:
+           user_identity = event_detail.get('userIdentity', {})
+           source_ip = event_detail.get('sourceIPAddress', 'Unknown')
+           event_time = event_detail.get('eventTime', 'Unknown')
+           
+           message = f"""
+   SECURITY ALERT: IAM Trust Policy Automatically Remediated
+   
+   Role Name: {role_name}
+   Unauthorized Principals Removed: {', '.join(unauthorized_principals)}
+   
+   Event Details:
+   - User: {user_identity.get('userName', 'Unknown')}
+   - User Type: {user_identity.get('type', 'Unknown')}
+   - Source IP: {source_ip}
+   - Event Time: {event_time}
+   
+   Action Taken: Unauthorized principals have been automatically removed from the trust policy.
+   
+   Please review this change and investigate the source of the unauthorized modification.
+           """
+           
+           sns.publish(
+               TopicArn=SNS_TOPIC_ARN,
+               Subject=f"IAM Trust Policy Remediated: {role_name}",
+               Message=message
+           )
+           
+           logger.info("Notification sent successfully")
+           
+       except Exception as e:
+           logger.error(f"Failed to send notification: {str(e)}")
+   ```
+
+4. **Update Environment Variables**
+   - Go to **Configuration** > **Environment variables**
+   - Click **Edit**
+   - Add key: `SNS_TOPIC_ARN`
+   - Value: Your SNS topic ARN (from Step 2)
+   - Click **Save**
+
+5. **Update Function Settings**
+   - Go to **Configuration** > **General configuration**
+   - Click **Edit**
+   - **Timeout**: 1 minute
+   - Click **Save**
+
+#### Step 4: Create EventBridge Rule
+
+1. **Navigate to EventBridge**
+   - Go to **EventBridge** > **Rules** > **Create rule**
+
+2. **Configure Rule Basics**
+   - **Name**: `iam-trust-policy-monitor`
+   - **Description**: `Monitor IAM role trust policy changes`
+   - **Event bus**: default
+   - **Rule type**: Rule with an event pattern
+   - Click **Next**
+
+3. **Define Event Pattern**
+   - **Event source**: AWS services
+   - **AWS service**: CloudTrail
+   - **Event type**: AWS API Call via CloudTrail
+   - Click **Edit pattern** and paste:
+
+   ```json
+   {
+     "source": ["aws.iam"],
+     "detail-type": ["AWS API Call via CloudTrail"],
+     "detail": {
+       "eventSource": ["iam.amazonaws.com"],
+       "eventName": ["UpdateAssumeRolePolicy"],
+       "errorCode": {
+         "exists": false
+       }
+     }
+   }
+   ```
+
+4. **Configure Target**
+   - Click **Next**
+   - **Target type**: AWS service
+   - **Service**: Lambda function
+   - **Function**: `iam-trust-policy-remediation`
+   - Click **Next**
+
+5. **Review and Create**
+   - Review settings
+   - Click **Create rule**
+
+#### Step 5: Test the Automated Remediation
+
+1. **Create Test IAM Role**
+   - Go to **IAM** > **Roles** > **Create role**
+   - **Trusted entity**: AWS account
+   - **Account ID**: Your current account
+   - **Role name**: `TestRemediationRole`
+   - Create with minimal permissions
+
+2. **Modify Trust Policy (Trigger Event)**
+   - Go to the role's **Trust relationships** tab
+   - Click **Edit trust policy**
+   - Add an unauthorized principal:
+
+   ```json
+   {
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Effect": "Allow",
+         "Principal": {
+           "AWS": [
+             "arn:aws:iam::YOUR-ACCOUNT-ID:root",
+             "arn:aws:iam::999999999999:root"
+           ]
+         },
+         "Action": "sts:AssumeRole"
+       }
+     ]
+   }
+   ```
+   - Click **Update policy**
+
+3. **Monitor Remediation**
+   - Wait 2-3 minutes for processing
+   - Check Lambda function logs in CloudWatch
+   - Verify trust policy was reverted
+   - Check for SNS notification email
+
+#### Step 6: Verify Remediation Results
+
+1. **Check Role Trust Policy**
+   - Return to `TestRemediationRole`
+   - View **Trust relationships**
+   - Verify unauthorized principal (999999999999) was removed
+   - Confirm only trusted principals remain
+
+2. **Review Lambda Logs**
+   - Go to **Lambda** > **Functions** > `iam-trust-policy-remediation`
+   - Click **Monitor** > **View CloudWatch logs**
+   - Review execution logs for remediation details
+
+3. **Check SNS Notification**
+   - Check email for security alert
+   - Review remediation details in notification
+
+#### Expected Results
+
+✅ **EventBridge Rule**: Monitors IAM trust policy changes
+✅ **Lambda Function**: Automatically remediates unauthorized changes
+✅ **Trust Policy Reverted**: Unauthorized principals removed
+✅ **Notification Sent**: Security team alerted of action
+✅ **Logs Available**: Detailed remediation logs in CloudWatch
+
+#### Security Benefits
+
+**Automated Protection:**
+- Real-time detection of trust policy changes
+- Immediate remediation of unauthorized access
+- Audit trail of all remediation actions
+- Security team notifications
+
+**Compliance:**
+- Maintains zone of trust boundaries
+- Prevents unauthorized cross-account access
+- Automated incident response
+- Detailed logging for audits
+
+#### Cleanup
+
+1. **Delete Test Resources**
+   - Delete `TestRemediationRole`
+   - Keep monitoring infrastructure for ongoing use
+
+2. **Optional: Disable Rule**
+   - Go to EventBridge > Rules
+   - Disable `iam-trust-policy-monitor` if not needed
+
+#### Troubleshooting
+
+- **Lambda not triggered**: Check EventBridge rule pattern and CloudTrail
+- **Permission errors**: Verify Lambda execution role permissions
+- **No notifications**: Check SNS topic ARN in Lambda environment variables
+- **Remediation failed**: Review Lambda logs for specific error details
+
+## Lab 6: IAM Access Analyzer Unused Access
+
+
+
+## Multi Account Diagrams
+
+### AWS Organization with IAM Access Analyzer Integration
+
+```mermaid
+graph TD
+    subgraph "AWS Organization"
+        OrgMgmt[Management Account\n- AWS Organizations\n- Billing & Cost Management]
+        
+        subgraph "Security Account (Delegated Admin)"
+            SecHub[AWS Security Hub\nCentralized Security Dashboard]
+            IAMAnalyzer[IAM Access Analyzer\nOrganization-wide Analyzer]
+            EventBridge[EventBridge\nCross-account Events]
+            Lambda[Lambda Functions\nAutomated Remediation]
+        end
+        
+        subgraph "Member Account 1 (Production)"
+            Prod_Resources[Production Resources\n- S3 Buckets\n- IAM Roles\n- Lambda Functions]
+            Prod_Findings[Local Findings\nResource Policies]
+        end
+        
+        subgraph "Member Account 2 (Development)"
+            Dev_Resources[Development Resources\n- S3 Buckets\n- IAM Roles\n- KMS Keys]
+            Dev_Findings[Local Findings\nResource Policies]
+        end
+    end
+    
+    %% Organization Setup
+    OrgMgmt -->|Delegates Admin| SecHub
+    OrgMgmt -->|Enables Service| IAMAnalyzer
+    
+    %% Access Analyzer Flow
+    Prod_Resources -->|Analyzes Policies| IAMAnalyzer
+    Dev_Resources -->|Analyzes Policies| IAMAnalyzer
+    
+    IAMAnalyzer -->|Generates Findings| Prod_Findings
+    IAMAnalyzer -->|Generates Findings| Dev_Findings
+    
+    %% Security Hub Integration
+    Prod_Findings -->|Sends Findings| SecHub
+    Dev_Findings -->|Sends Findings| SecHub
+    IAMAnalyzer -->|Aggregates Findings| SecHub
+    
+    %% Event-driven Automation
+    IAMAnalyzer -->|Triggers Events| EventBridge
+    EventBridge -->|Invokes| Lambda
+    Lambda -->|Remediates| Prod_Resources
+    Lambda -->|Remediates| Dev_Resources
+    
+    %% Notifications
+    Lambda -->|Alerts| SecHub
+    
+    style OrgMgmt fill:#ff9999
+    style SecHub fill:#99ccff
+    style IAMAnalyzer fill:#99ff99
+    style EventBridge fill:#ffcc99
+    style Lambda fill:#ffccff
+```
+
+### Third-Party Integration Architecture
+
+```mermaid
+graph TD
+    subgraph "AWS Environment"
+        subgraph "Security Account"
+            IAMAnalyzer[IAM Access Analyzer\nFindings Generator]
+            EventBridge[Amazon EventBridge\nEvent Router]
+            Kinesis[Amazon Kinesis\nData Streams]
+            Lambda[Lambda Function\nData Transformation]
+        end
+        
+        subgraph "Member Accounts"
+            Resources[AWS Resources\n- S3 Buckets\n- IAM Roles\n- Lambda Functions]
+            Findings[Security Findings\nPolicy Violations]
+        end
+    end
+    
+    subgraph "Third-Party Solutions"
+        SIEM[SIEM Platform\n- Splunk\n- QRadar\n- ArcSight]
+        
+        SOAR[SOAR Platform\n- Phantom\n- Demisto\n- Swimlane]
+        
+        Ticketing[Ticketing System\n- ServiceNow\n- Jira\n- PagerDuty]
+        
+        Slack[Communication\n- Slack\n- Microsoft Teams\n- Email]
+    end
+    
+    subgraph "Integration Methods"
+        API[REST APIs\nWebhooks]
+        SQS[Amazon SQS\nMessage Queue]
+        SNS[Amazon SNS\nNotifications]
+        S3Export[S3 Export\nBatch Processing]
+    end
+    
+    %% Data Flow
+    Resources -->|Policy Analysis| IAMAnalyzer
+    IAMAnalyzer -->|Generates| Findings
+    
+    %% Real-time Integration
+    Findings -->|Triggers Events| EventBridge
+    EventBridge -->|Streams Data| Kinesis
+    EventBridge -->|Direct Integration| API
+    
+    %% Data Transformation
+    Kinesis -->|Processes| Lambda
+    Lambda -->|Transforms| API
+    
+    %% Message Queue Integration
+    EventBridge -->|Queues Messages| SQS
+    SQS -->|Consumes| SIEM
+    
+    %% Notification Integration
+    EventBridge -->|Publishes| SNS
+    SNS -->|Notifies| Slack
+    SNS -->|Creates Tickets| Ticketing
+    
+    %% Batch Export
+    Findings -->|Exports| S3Export
+    S3Export -->|Batch Import| SIEM
+    
+    %% Third-party Consumption
+    API -->|Ingests| SIEM
+    API -->|Triggers| SOAR
+    API -->|Creates| Ticketing
+    
+    %% Automated Response
+    SOAR -->|Orchestrates| Lambda
+    SIEM -->|Alerts| Ticketing
+    
+    style IAMAnalyzer fill:#99ff99
+    style EventBridge fill:#ffcc99
+    style Kinesis fill:#99ccff
+    style Lambda fill:#ffccff
+    style SIEM fill:#ff9999
+    style SOAR fill:#ff9999
+    style API fill:#ccffcc
+```
+
+### Multi-Account Setup Benefits
+
+**Organization-Wide Visibility:**
+- Centralized security findings across all accounts
+- Consistent policy analysis and reporting
+- Cross-account resource access detection
+- Unified security posture management
+
+**Delegated Administration:**
+- Security account manages Access Analyzer for entire organization
+- Centralized remediation and response capabilities
+- Consistent archive rules and policies
+- Reduced operational overhead
+
+**Security Hub Integration:**
+- Aggregated security findings from multiple sources
+- Standardized finding format (ASFF)
+- Centralized dashboard and reporting
+- Integration with other AWS security services
+
+**Third-Party Integration Benefits:**
+- Real-time security event streaming
+- Integration with existing security tools
+- Automated incident response workflows
+- Custom alerting and notification systems
+
+### Implementation Considerations
+
+**Organization Setup:**
+1. Enable AWS Organizations in management account
+2. Designate security account as delegated administrator
+3. Enable Access Analyzer at organization level
+4. Configure Security Hub for centralized findings
+
+**Cross-Account Permissions:**
+- Service-linked roles for Access Analyzer
+- Cross-account EventBridge permissions
+- Security Hub integration permissions
+- Lambda execution roles for remediation
+
+**Third-Party Integration:**
+- API authentication and authorization
+- Data format transformation requirements
+- Rate limiting and error handling
+- Secure communication channels (TLS/SSL)
 
 ## Best Practices
 
@@ -633,15 +1536,12 @@ This lab creates an IAM role that can be assumed by an external AWS account, whi
 - Centralized monitoring and reporting
 - Cross-account finding correlation
 
-## Common Findings and Resolutions
+## AWS re:Inforce 2025: announcement
+https://aws.amazon.com/blogs/aws/verify-internal-access-to-critical-aws-resources-with-new-iam-access-analyzer-capabilities/
 
-| Finding Type | Common Cause | Resolution |
-|--------------|--------------|------------|
-| Public S3 Bucket | Bucket policy allows public access | Review if public access is needed, add archive rule if intentional |
-| Cross-Account Role | Role trust policy includes external account | Verify external account is trusted, add conditions if needed |
-| Lambda External Access | Resource policy allows external invocation | Review if external access is required, restrict to specific sources |
-| KMS Key Sharing | Key policy grants external access | Verify encryption sharing requirements, use grants for temporary access |
-| SQS Queue Access | Queue policy allows external send/receive | Review integration requirements, use conditions to restrict access |
+AWS IAM Analyzer Unused Access
+
+
 
 ## Troubleshooting
 
