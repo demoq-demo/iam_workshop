@@ -266,6 +266,13 @@ It uses automated reasoning to collectively evaluate multiple policies, includin
 and identity-based policies, and generates findings when a user or role has access to your S3 buckets,
 Amazon DynamoDB tables, or Amazon Relational Database Service (Amazon RDS) snapshots.
 
+Internal Access findings are INFORMATIONAL, not necessarily PROBLEMATIC. They help you:
+
+1. Understand your access landscape - Purpose: Shows WHO has access to WHAT resources within your organization
+2. Validate least privilege implementation - Purpose: Identifies potentially excessive internal permissions
+3. Meet compliance requirements - Purpose: Documents all access paths for audit requirements
+4. Detect unauthorized access changes - Purpose: Highlights high-value resources with internal access, Establishes baseline for future access changes (change detection)
+
 ```
 
 ### Unused Access 
