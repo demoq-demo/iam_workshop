@@ -256,7 +256,7 @@ https://aws.amazon.com/blogs/aws/verify-internal-access-to-critical-aws-resource
 ### Supported Resources - external access
 ![IAM Access Analyzer - supported resources - external access](./diagrams/ea_supported_services.PNG)
 
-### Internal Access
+### Internal Access (AWS re:Inforce 2025: announcement)
 ![IAM Access Analyzer - internal access](./diagrams/internal_access.PNG)
 
 ### Unused Access 
