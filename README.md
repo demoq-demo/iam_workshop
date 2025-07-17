@@ -1,4 +1,3 @@
-
 # IAM Access Analyzer Workshop - Complete Use Cases Guide
 
 ## Overview
@@ -36,7 +35,7 @@ pie title IAM Access Analyzer Features
     "Third-Party Integration" : 5
 ```
 
-### 2. Comprehensive Use Cases Diagram
+### 2. Comprehensive Use Cases Diagram - Part 1
 
 ```mermaid
 graph TD
@@ -70,6 +69,64 @@ graph TD
         CrossAccount[Cross-Account Access\nTrust Relationships]
         FederatedAccess[Federated Access\nSAML/OIDC Integration]
     end
+    
+    %% Central connections
+    IAMAnalyzer --> CICD
+    IAMAnalyzer --> UnusedAccess
+    IAMAnalyzer --> LeastPrivilege
+    IAMAnalyzer --> ExternalAccess
+    
+    %% CI/CD connections
+    CICD --> PreCommit
+    CICD --> SecurityGate
+    CICD --> IaC
+    
+    %% Unused Access connections
+    UnusedAccess --> IAMUsers
+    UnusedAccess --> IAMRoles
+    UnusedAccess --> AccessKeys
+    UnusedAccess --> ServiceAccounts
+    
+    %% Least Privilege connections
+    LeastPrivilege --> PolicyOptimization
+    LeastPrivilege --> RiskAssessment
+    LeastPrivilege --> GradualRollout
+    
+    %% External Access connections
+    ExternalAccess --> PublicResources
+    ExternalAccess --> CrossAccount
+    ExternalAccess --> FederatedAccess
+    
+    %% Styling
+    style IAMAnalyzer fill:#4CAF50,stroke:#2E7D32,stroke-width:3px,color:#fff
+    
+    style CICD fill:#2196F3,stroke:#1565C0,stroke-width:2px,color:#fff
+    style PreCommit fill:#E3F2FD,stroke:#1976D2,stroke-width:1px
+    style SecurityGate fill:#E3F2FD,stroke:#1976D2,stroke-width:1px
+    style IaC fill:#E3F2FD,stroke:#1976D2,stroke-width:1px
+    
+    style UnusedAccess fill:#FF9800,stroke:#E65100,stroke-width:2px,color:#fff
+    style IAMUsers fill:#FFF3E0,stroke:#F57C00,stroke-width:1px
+    style IAMRoles fill:#FFF3E0,stroke:#F57C00,stroke-width:1px
+    style AccessKeys fill:#FFF3E0,stroke:#F57C00,stroke-width:1px
+    style ServiceAccounts fill:#FFF3E0,stroke:#F57C00,stroke-width:1px
+    
+    style LeastPrivilege fill:#9C27B0,stroke:#6A1B9A,stroke-width:2px,color:#fff
+    style PolicyOptimization fill:#F3E5F5,stroke:#8E24AA,stroke-width:1px
+    style RiskAssessment fill:#F3E5F5,stroke:#8E24AA,stroke-width:1px
+    style GradualRollout fill:#F3E5F5,stroke:#8E24AA,stroke-width:1px
+    
+    style ExternalAccess fill:#F44336,stroke:#C62828,stroke-width:2px,color:#fff
+    style PublicResources fill:#FFEBEE,stroke:#D32F2F,stroke-width:1px
+    style CrossAccount fill:#FFEBEE,stroke:#D32F2F,stroke-width:1px
+    style FederatedAccess fill:#FFEBEE,stroke:#D32F2F,stroke-width:1px
+```
+
+### 3. Comprehensive Use Cases Diagram - Part 2
+
+```mermaid
+graph TD
+    IAMAnalyzer2[IAM Access Analyzer\nCentral Security Hub]
     
     subgraph "Policy Management"
         PolicyValidation[Policy Validation\nSyntax & Security Checks]
@@ -107,36 +164,11 @@ graph TD
     end
     
     %% Central connections
-    IAMAnalyzer --> CICD
-    IAMAnalyzer --> UnusedAccess
-    IAMAnalyzer --> LeastPrivilege
-    IAMAnalyzer --> ExternalAccess
-    IAMAnalyzer --> PolicyValidation
-    IAMAnalyzer --> ContinuousMonitoring
-    IAMAnalyzer --> OrgWide
-    IAMAnalyzer --> ComplianceReporting
-    IAMAnalyzer --> SIEM
-    
-    %% CI/CD connections
-    CICD --> PreCommit
-    CICD --> SecurityGate
-    CICD --> IaC
-    
-    %% Unused Access connections
-    UnusedAccess --> IAMUsers
-    UnusedAccess --> IAMRoles
-    UnusedAccess --> AccessKeys
-    UnusedAccess --> ServiceAccounts
-    
-    %% Least Privilege connections
-    LeastPrivilege --> PolicyOptimization
-    LeastPrivilege --> RiskAssessment
-    LeastPrivilege --> GradualRollout
-    
-    %% External Access connections
-    ExternalAccess --> PublicResources
-    ExternalAccess --> CrossAccount
-    ExternalAccess --> FederatedAccess
+    IAMAnalyzer2 --> PolicyValidation
+    IAMAnalyzer2 --> ContinuousMonitoring
+    IAMAnalyzer2 --> OrgWide
+    IAMAnalyzer2 --> ComplianceReporting
+    IAMAnalyzer2 --> SIEM
     
     %% Policy Management connections
     PolicyValidation --> BestPractices
@@ -164,28 +196,7 @@ graph TD
     SIEM --> CustomAPI
     
     %% Styling
-    style IAMAnalyzer fill:#4CAF50,stroke:#2E7D32,stroke-width:3px,color:#fff
-    
-    style CICD fill:#2196F3,stroke:#1565C0,stroke-width:2px,color:#fff
-    style PreCommit fill:#E3F2FD,stroke:#1976D2,stroke-width:1px
-    style SecurityGate fill:#E3F2FD,stroke:#1976D2,stroke-width:1px
-    style IaC fill:#E3F2FD,stroke:#1976D2,stroke-width:1px
-    
-    style UnusedAccess fill:#FF9800,stroke:#E65100,stroke-width:2px,color:#fff
-    style IAMUsers fill:#FFF3E0,stroke:#F57C00,stroke-width:1px
-    style IAMRoles fill:#FFF3E0,stroke:#F57C00,stroke-width:1px
-    style AccessKeys fill:#FFF3E0,stroke:#F57C00,stroke-width:1px
-    style ServiceAccounts fill:#FFF3E0,stroke:#F57C00,stroke-width:1px
-    
-    style LeastPrivilege fill:#9C27B0,stroke:#6A1B9A,stroke-width:2px,color:#fff
-    style PolicyOptimization fill:#F3E5F5,stroke:#8E24AA,stroke-width:1px
-    style RiskAssessment fill:#F3E5F5,stroke:#8E24AA,stroke-width:1px
-    style GradualRollout fill:#F3E5F5,stroke:#8E24AA,stroke-width:1px
-    
-    style ExternalAccess fill:#F44336,stroke:#C62828,stroke-width:2px,color:#fff
-    style PublicResources fill:#FFEBEE,stroke:#D32F2F,stroke-width:1px
-    style CrossAccount fill:#FFEBEE,stroke:#D32F2F,stroke-width:1px
-    style FederatedAccess fill:#FFEBEE,stroke:#D32F2F,stroke-width:1px
+    style IAMAnalyzer2 fill:#4CAF50,stroke:#2E7D32,stroke-width:3px,color:#fff
     
     style PolicyValidation fill:#00BCD4,stroke:#00838F,stroke-width:2px,color:#fff
     style BestPractices fill:#E0F2F1,stroke:#00695C,stroke-width:1px
@@ -218,17 +229,19 @@ https://aws.amazon.com/blogs/aws/verify-internal-access-to-critical-aws-resource
 
 ## IAM Access Analyzer Analysis Overview
 
+### Type of Analyzers
 ![IAM Access Analyzer - type of analyzers](./diagrams/type_of_analyzers.PNG)
 
-External Access
+### External Access
 ![IAM Access Analyzer - external access](./diagrams/external_access_analysis.PNG)
 
+### Supported Resources - external access
 ![IAM Access Analyzer - supported resources - external access](./diagrams/ea_supported_services.PNG)
 
-Internal Access
+### Internal Access
 ![IAM Access Analyzer - internal access](./diagrams/internal_access.PNG)
 
-Unused Access 
+### Unused Access 
 ![IAM Access Analyzer - unused access](./diagrams/unused_access.PNG)
 
 
