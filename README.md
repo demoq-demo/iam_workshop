@@ -35,7 +35,7 @@ pie title IAM Access Analyzer Features
     "Third-Party Integration" : 5
 ```
 
-### 2. Comprehensive Use Cases Diagram - Part 1
+### 2. Comprehensive Use Cases Diagram - Part 1 (Core Security)
 
 ```mermaid
 graph TD
@@ -56,13 +56,6 @@ graph TD
         ServiceAccounts[Service Accounts\nAutomated Cleanup]
     end
     
-    subgraph "Least Privilege Implementation"
-        LeastPrivilege[Least Privilege Automation\nPermission Right-sizing]
-        PolicyOptimization[Policy Optimization\nPermission Reduction]
-        RiskAssessment[Risk Assessment\nHigh-Risk Permission Analysis]
-        GradualRollout[Gradual Implementation\nCanary Deployments]
-    end
-    
     subgraph "External Access Detection"
         ExternalAccess[External Access Findings\nCross-Account Detection]
         PublicResources[Public Resources\nS3, Lambda, SQS]
@@ -73,7 +66,6 @@ graph TD
     %% Central connections
     IAMAnalyzer --> CICD
     IAMAnalyzer --> UnusedAccess
-    IAMAnalyzer --> LeastPrivilege
     IAMAnalyzer --> ExternalAccess
     
     %% CI/CD connections
@@ -86,11 +78,6 @@ graph TD
     UnusedAccess --> IAMRoles
     UnusedAccess --> AccessKeys
     UnusedAccess --> ServiceAccounts
-    
-    %% Least Privilege connections
-    LeastPrivilege --> PolicyOptimization
-    LeastPrivilege --> RiskAssessment
-    LeastPrivilege --> GradualRollout
     
     %% External Access connections
     ExternalAccess --> PublicResources
@@ -111,22 +98,24 @@ graph TD
     style AccessKeys fill:#FFF3E0,stroke:#F57C00,stroke-width:1px
     style ServiceAccounts fill:#FFF3E0,stroke:#F57C00,stroke-width:1px
     
-    style LeastPrivilege fill:#9C27B0,stroke:#6A1B9A,stroke-width:2px,color:#fff
-    style PolicyOptimization fill:#F3E5F5,stroke:#8E24AA,stroke-width:1px
-    style RiskAssessment fill:#F3E5F5,stroke:#8E24AA,stroke-width:1px
-    style GradualRollout fill:#F3E5F5,stroke:#8E24AA,stroke-width:1px
-    
     style ExternalAccess fill:#F44336,stroke:#C62828,stroke-width:2px,color:#fff
     style PublicResources fill:#FFEBEE,stroke:#D32F2F,stroke-width:1px
     style CrossAccount fill:#FFEBEE,stroke:#D32F2F,stroke-width:1px
     style FederatedAccess fill:#FFEBEE,stroke:#D32F2F,stroke-width:1px
 ```
 
-### 3. Comprehensive Use Cases Diagram - Part 2
+### 3. Comprehensive Use Cases Diagram - Part 2 (Policy & Monitoring)
 
 ```mermaid
 graph TD
     IAMAnalyzer2[IAM Access Analyzer\nCentral Security Hub]
+    
+    subgraph "Least Privilege Implementation"
+        LeastPrivilege[Least Privilege Automation\nPermission Right-sizing]
+        PolicyOptimization[Policy Optimization\nPermission Reduction]
+        RiskAssessment[Risk Assessment\nHigh-Risk Permission Analysis]
+        GradualRollout[Gradual Implementation\nCanary Deployments]
+    end
     
     subgraph "Policy Management"
         PolicyValidation[Policy Validation\nSyntax & Security Checks]
@@ -141,6 +130,51 @@ graph TD
         SecurityHub[Security Hub Integration\nCentralized Findings]
         CustomAlerts[Custom Alerts\nSlack/Email Notifications]
     end
+    
+    %% Central connections
+    IAMAnalyzer2 --> LeastPrivilege
+    IAMAnalyzer2 --> PolicyValidation
+    IAMAnalyzer2 --> ContinuousMonitoring
+    
+    %% Least Privilege connections
+    LeastPrivilege --> PolicyOptimization
+    LeastPrivilege --> RiskAssessment
+    LeastPrivilege --> GradualRollout
+    
+    %% Policy Management connections
+    PolicyValidation --> BestPractices
+    PolicyValidation --> ComplianceCheck
+    PolicyValidation --> PolicyRecommendations
+    
+    %% Monitoring connections
+    ContinuousMonitoring --> EventBridge
+    ContinuousMonitoring --> SecurityHub
+    ContinuousMonitoring --> CustomAlerts
+    
+    %% Styling
+    style IAMAnalyzer2 fill:#4CAF50,stroke:#2E7D32,stroke-width:3px,color:#fff
+    
+    style LeastPrivilege fill:#9C27B0,stroke:#6A1B9A,stroke-width:2px,color:#fff
+    style PolicyOptimization fill:#F3E5F5,stroke:#8E24AA,stroke-width:1px
+    style RiskAssessment fill:#F3E5F5,stroke:#8E24AA,stroke-width:1px
+    style GradualRollout fill:#F3E5F5,stroke:#8E24AA,stroke-width:1px
+    
+    style PolicyValidation fill:#00BCD4,stroke:#00838F,stroke-width:2px,color:#fff
+    style BestPractices fill:#E0F2F1,stroke:#00695C,stroke-width:1px
+    style ComplianceCheck fill:#E0F2F1,stroke:#00695C,stroke-width:1px
+    style PolicyRecommendations fill:#E0F2F1,stroke:#00695C,stroke-width:1px
+    
+    style ContinuousMonitoring fill:#607D8B,stroke:#37474F,stroke-width:2px,color:#fff
+    style EventBridge fill:#ECEFF1,stroke:#455A64,stroke-width:1px
+    style SecurityHub fill:#ECEFF1,stroke:#455A64,stroke-width:1px
+    style CustomAlerts fill:#ECEFF1,stroke:#455A64,stroke-width:1px
+```
+
+### 4. Comprehensive Use Cases Diagram - Part 3 (Governance & Integration)
+
+```mermaid
+graph TD
+    IAMAnalyzer3[IAM Access Analyzer\nCentral Security Hub]
     
     subgraph "Multi-Account Management"
         OrgWide[Organization-wide Analysis\nCentralized Management]
@@ -164,21 +198,9 @@ graph TD
     end
     
     %% Central connections
-    IAMAnalyzer2 --> PolicyValidation
-    IAMAnalyzer2 --> ContinuousMonitoring
-    IAMAnalyzer2 --> OrgWide
-    IAMAnalyzer2 --> ComplianceReporting
-    IAMAnalyzer2 --> SIEM
-    
-    %% Policy Management connections
-    PolicyValidation --> BestPractices
-    PolicyValidation --> ComplianceCheck
-    PolicyValidation --> PolicyRecommendations
-    
-    %% Monitoring connections
-    ContinuousMonitoring --> EventBridge
-    ContinuousMonitoring --> SecurityHub
-    ContinuousMonitoring --> CustomAlerts
+    IAMAnalyzer3 --> OrgWide
+    IAMAnalyzer3 --> ComplianceReporting
+    IAMAnalyzer3 --> SIEM
     
     %% Multi-Account connections
     OrgWide --> DelegatedAdmin
@@ -196,17 +218,7 @@ graph TD
     SIEM --> CustomAPI
     
     %% Styling
-    style IAMAnalyzer2 fill:#4CAF50,stroke:#2E7D32,stroke-width:3px,color:#fff
-    
-    style PolicyValidation fill:#00BCD4,stroke:#00838F,stroke-width:2px,color:#fff
-    style BestPractices fill:#E0F2F1,stroke:#00695C,stroke-width:1px
-    style ComplianceCheck fill:#E0F2F1,stroke:#00695C,stroke-width:1px
-    style PolicyRecommendations fill:#E0F2F1,stroke:#00695C,stroke-width:1px
-    
-    style ContinuousMonitoring fill:#607D8B,stroke:#37474F,stroke-width:2px,color:#fff
-    style EventBridge fill:#ECEFF1,stroke:#455A64,stroke-width:1px
-    style SecurityHub fill:#ECEFF1,stroke:#455A64,stroke-width:1px
-    style CustomAlerts fill:#ECEFF1,stroke:#455A64,stroke-width:1px
+    style IAMAnalyzer3 fill:#4CAF50,stroke:#2E7D32,stroke-width:3px,color:#fff
     
     style OrgWide fill:#795548,stroke:#3E2723,stroke-width:2px,color:#fff
     style DelegatedAdmin fill:#EFEBE9,stroke:#5D4037,stroke-width:1px
@@ -219,6 +231,10 @@ graph TD
     style GovernanceWorkflow fill:#E8EAF6,stroke:#303F9F,stroke-width:1px
     
     style SIEM fill:#E91E63,stroke:#AD1457,stroke-width:2px,color:#fff
+    style SOAR fill:#FCE4EC,stroke:#C2185B,stroke-width:1px
+    style TicketingSystems fill:#FCE4EC,stroke:#C2185B,stroke-width:1px
+    style CustomAPI fill:#FCE4EC,stroke:#C2185B,stroke-width:1px
+```le SIEM fill:#E91E63,stroke:#AD1457,stroke-width:2px,color:#fff
     style SOAR fill:#FCE4EC,stroke:#C2185B,stroke-width:1px
     style TicketingSystems fill:#FCE4EC,stroke:#C2185B,stroke-width:1px
     style CustomAPI fill:#FCE4EC,stroke:#C2185B,stroke-width:1px
