@@ -116,6 +116,144 @@ Access from accounts outside the organization
 Public access (Principal: "*")
 External third-party access
 
+## Zone of Trust Examples - External vs Internal Analyzer
+
+The Zone of Trust concept applies differently to **External Access Analyzer** (original) vs **Internal Access Analyzer** (new feature). Here's how they work:
+
+### **External Access Analyzer (Original)**
+**Purpose**: Detect access from outside your zone of trust
+
+```mermaid
+graph TD
+    subgraph "External Access Analyzer"
+        A[Detects External Access]
+        B[Zone of Trust Boundary]
+        C[Generates Findings for<br/>Outside Access]
+    end
+    
+    subgraph "Account Zone Example"
+        D[Same Account Access<br/>✅ No Finding]
+    end
+    
+    subgraph "Organization Zone Example"
+        E[Org Member Access<br/>✅ No Finding]
+    end
+    
+    subgraph "External Example"
+        F[Outside Account<br/>❌ Finding Generated]
+    end
+    
+    A --> D
+    A --> E
+    A --> F
+    
+    style A fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+    style F fill:#ffebee,stroke:#f44336,stroke-width:2px
+```
+
+#### **External Analyzer Examples:**
+
+**Account Zone - External Analyzer:**
+```json
+{
+  "Principal": {"AWS": "arn:aws:iam::123456789012:role/MyRole"},
+  "Action": "s3:GetObject"
+}
+```
+**Result**: ✅ **No Finding** - Same account is in zone of trust
+
+**Organization Zone - External Analyzer:**
+```json
+{
+  "Principal": {"AWS": "arn:aws:iam::222222222222:role/OrgRole"},
+  "Action": "s3:GetObject"  
+}
+```
+**Result**: ✅ **No Finding** - Organization member is in zone of trust
+
+**External Access - External Analyzer:**
+```json
+{
+  "Principal": {"AWS": "arn:aws:iam::999999999999:root"},
+  "Action": "s3:GetObject"
+}
+```
+**Result**: ❌ **Finding Generated** - Outside zone of trust
+
+### **Internal Access Analyzer (New Feature)**
+**Purpose**: Track access patterns within your zone of trust
+
+```mermaid
+graph TD
+    subgraph "Internal Access Analyzer"
+        A[Tracks Internal Access]
+        B[Within Zone of Trust]
+        C[Generates Findings for<br/>Internal Access Patterns]
+    end
+    
+    subgraph "Internal Examples"
+        D[Same Account Access<br/>❌ Finding Generated<br/>for visibility]
+        E[Org Member Access<br/>❌ Finding Generated<br/>for governance]
+        F[Service Account Access<br/>❌ Finding Generated<br/>for audit]
+    end
+    
+    A --> D
+    A --> E
+    A --> F
+    
+    style A fill:#fff3e0,stroke:#ff9800,stroke-width:2px
+    style D fill:#ffebee,stroke:#f44336,stroke-width:2px
+    style E fill:#ffebee,stroke:#f44336,stroke-width:2px
+    style F fill:#ffebee,stroke:#f44336,stroke-width:2px
+```
+
+#### **Internal Analyzer Examples:**
+
+**Account Zone - Internal Analyzer:**
+```json
+{
+  "Principal": {"AWS": "arn:aws:iam::123456789012:role/MyRole"},
+  "Action": "s3:GetObject"
+}
+```
+**Result**: ❌ **Finding Generated** - Internal access tracked for governance
+
+**Organization Zone - Internal Analyzer:**
+```json
+{
+  "Principal": {"AWS": "arn:aws:iam::222222222222:role/OrgRole"},
+  "Action": "s3:GetObject"
+}
+```
+**Result**: ❌ **Finding Generated** - Internal org access tracked for visibility
+
+### **Key Differences:**
+
+| Analyzer Type | Purpose | Zone of Trust Impact | Finding Logic |
+|---------------|---------|---------------------|---------------|
+| **External** | Detect outside access | Defines what's trusted | Outside zone = Finding |
+| **Internal** | Track inside access | Defines what to monitor | Inside zone = Finding |
+
+### **When to Use Each:**
+
+#### **External Access Analyzer:**
+- **Security boundary enforcement**
+- **Detect external threats**
+- **Compliance with data protection**
+- **Monitor cross-account access**
+
+#### **Internal Access Analyzer:**
+- **Governance and visibility**
+- **Audit internal access patterns**
+- **Compliance documentation**
+- **Least privilege validation**
+
+### **Summary:**
+The **Zone of Trust** concept applies to both analyzers but with **opposite logic**:
+- **External**: Inside zone = trusted (no findings)
+- **Internal**: Inside zone = monitored (generates findings)
+
+Both analyzers can be used together for comprehensive access visibility and security governance.
 
 ## IAM Access Analyzer Use Cases
 
