@@ -17,8 +17,35 @@ IAM Access Analyzer uses provable security (mathematical logic) to analyze resou
 
 ## Zone of Trust
 
+Zone of Trust defines the boundary of what Access Analyzer considers "internal" vs "external" access. It determines which access patterns generate findings.
+
 - **Account Zone** - Your AWS account is the zone of trust
 - **Organization Zone** - Your AWS Organization is the zone of trust
+
+graph TD
+    subgraph "Account Zone (123456789012)"
+        A[Your AWS Account]
+        B[IAM Users in Account]
+        C[IAM Roles in Account]
+        D[S3 Buckets]
+        E[Lambda Functions]
+    end
+    
+    subgraph "External (Outside Zone)"
+        F[Different AWS Account<br/>987654321098]
+        G[Public Internet<br/>Principal: *]
+        H[Third-party Services]
+    end
+    
+    A -.->|TRUSTED| B
+    A -.->|TRUSTED| C
+    D -->|FINDING| F
+    E -->|FINDING| G
+    
+    style A fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+    style F fill:#ffebee,stroke:#f44336,stroke-width:2px
+    style G fill:#ffebee,stroke:#f44336,stroke-width:2px
+
 
 ## IAM Access Analyzer Use Cases
 
