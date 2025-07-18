@@ -15,6 +15,138 @@ IAM Access Analyzer uses provable security (mathematical logic) to analyze resou
 - **Continuous Monitoring** - Monitors for new external access grants
 - **Integration** - Works with EventBridge, CloudTrail, and other AWS services
 
+
+## AWS Provable Security (Mathematical Logic)
+
+**Provable Security** is AWS's approach to using **formal mathematical methods** to analyze and verify security properties of IAM policies and resource configurations.
+
+### **What is Provable Security?**
+
+```mermaid
+graph TD
+    subgraph "Traditional Security Analysis"
+        A[Manual Review]
+        B[Best Practice Checks]
+        C[Pattern Matching]
+        D[Heuristic Rules]
+    end
+    
+    subgraph "Provable Security (Mathematical)"
+        E[Formal Logic Models]
+        F[Mathematical Proofs]
+        G[Automated Reasoning]
+        H[Exhaustive Analysis]
+    end
+    
+    subgraph "Policy Analysis"
+        I[IAM Policy JSON]
+        J[Resource Policies]
+        K[Trust Relationships]
+    end
+    
+    I --> E
+    J --> F
+    K --> G
+    
+    E --> L[Mathematically Proven Results]
+    F --> L
+    G --> L
+    H --> L
+    
+    A --> M[Best Effort Results]
+    B --> M
+    C --> M
+    D --> M
+    
+    style E fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+    style F fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+    style G fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+    style L fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
+    style M fill:#fff3e0,stroke:#ff9800,stroke-width:2px
+```
+
+### **Core Mathematical Concepts:**
+
+#### **1. Automated Reasoning**
+- **Logical Inference**: Uses mathematical logic to derive conclusions
+- **Theorem Proving**: Mathematically proves security properties
+- **Satisfiability Solving**: Determines if access conditions can be satisfied
+- **Model Checking**: Verifies all possible execution paths
+
+#### **2. Mathematical Analysis Examples:**
+
+**External Access Detection:**
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Allow",
+    "Principal": {"AWS": "*"},
+    "Action": "s3:GetObject",
+    "Resource": "arn:aws:s3:::my-bucket/*"
+  }]
+}
+```
+
+**Mathematical Analysis:**
+```
+Let P = Set of all possible principals
+Let T = Zone of Trust = {Account_123456789012}
+Let E = External Principals = P - T
+
+Policy allows: ∀ p ∈ P : CanAccess(p, s3:GetObject, my-bucket/*)
+Since P ⊃ E and E ≠ ∅
+Therefore: ∃ p ∈ E : CanAccess(p, s3:GetObject, my-bucket/*)
+Conclusion: EXTERNAL ACCESS DETECTED (mathematically proven)
+```
+
+### **How IAM Access Analyzer Uses Mathematical Logic:**
+
+```mermaid
+graph TD
+    subgraph "Input Processing"
+        A[IAM Policy JSON]
+        B[Resource Policy]
+        C[Trust Policy]
+    end
+    
+    subgraph "Mathematical Transformation"
+        D[Parse to Logic Model]
+        E[Convert to Mathematical Expressions]
+        F[Build Constraint System]
+    end
+    
+    subgraph "Automated Reasoning Engine"
+        G[Satisfiability Solver]
+        H[Theorem Prover]
+        I[Model Checker]
+    end
+    
+    subgraph "Analysis Results"
+        J[Provable Access Paths]
+        K[External Access Detection]
+        L[Policy Contradictions]
+        M[Unreachable Code]
+    end
+    
+    A --> D
+    B --> E
+    C --> F
+    
+    D --> G
+    E --> H
+    F --> I
+    
+    G --> J
+    H --> K
+    I --> L
+    I --> M
+    
+    style G fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+    style H fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+    style I fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+```
+
 ## Zone of Trust
 
 Zone of Trust defines the boundary of what Access Analyzer considers "internal" vs "external" access. It determines which access patterns generate findings.
