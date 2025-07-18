@@ -255,6 +255,8 @@ The **Zone of Trust** concept applies to both analyzers but with **opposite logi
 
 Both analyzers can be used together for comprehensive access visibility and security governance.
 
+
+
 ## IAM Access Analyzer Use Cases
 
 ### 1. IAM Access Analyzer Features Distribution (Pie Chart)
