@@ -2298,13 +2298,17 @@ flowchart TD
 - **Documentation**: Maintain clear lists of forbidden combinations
 
 ```mermaid
-flowchart LR
+flowchart TD
     subgraph FAIL ["❌ POLICY THAT FAILS"]
         FailPolicy["Policy Document<br/>Action: dynamodb:GetItem<br/>Action: dynamodb:DeleteTable<br/>Resource: table/prod-*"]
     end
     
+    subgraph STORAGE ["📦 RULES STORAGE"]
+        DynamoDB["DynamoDB Table<br/>SecurityPolicyRules<br/><br/>rule_type: forbidden_action<br/>rule_value: dynamodb:DeleteTable<br/><br/>rule_type: protected_resource<br/>rule_value: table/prod-*"]
+    end
+    
     subgraph API ["🔍 API METHOD"]
-        Method["check-access-not-granted<br/><br/>Forbidden Actions:<br/>dynamodb:DeleteTable<br/><br/>Protected Resources:<br/>table/prod-*"]
+        Method["check-access-not-granted<br/><br/>1. Query DynamoDB rules<br/>2. Check policy actions<br/>3. Match against forbidden<br/>4. Return FAIL/PASS"]
     end
     
     subgraph PASS ["✅ POLICY THAT PASSES"]
@@ -2312,9 +2316,11 @@ flowchart LR
     end
     
     FAIL --> API
+    STORAGE --> API
     API --> PASS
     
     style FAIL fill:#ffebee,stroke:#f44336,stroke-width:2px
+    style STORAGE fill:#fff3e0,stroke:#ff9800,stroke-width:2px
     style API fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
     style PASS fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
 ```
@@ -2324,6 +2330,7 @@ flowchart LR
 - **PASSES**: Policy only grants safe read/write operations, no destructive actions
 - **Use Case**: Prevent dangerous operations on critical production resources
 - **Security**: Enforces organizational boundaries and prevents data loss
+
 
 
 #### check-no-public-access
@@ -2353,13 +2360,17 @@ flowchart LR
 - **Integration**: Essential for S3 bucket policy validation
 
 ```mermaid
-flowchart LR
+flowchart TD
     subgraph FAIL ["❌ POLICY THAT FAILS"]
         FailPolicy["S3 Bucket Policy<br/>Principal: *<br/>Action: s3:GetObject<br/>Resource: private-bucket/*"]
     end
     
+    subgraph STORAGE ["📦 TRUSTED PRINCIPALS"]
+        ParamStore["Parameter Store<br/>/security/trusted-principals<br/><br/>Allowed Principals:<br/>- arn:aws:iam::123456789012:root<br/>- arn:aws:iam::987654321098:root<br/><br/>Public Patterns to Block:<br/>- Principal: *<br/>- Principal: *.amazonaws.com"]
+    end
+    
     subgraph API ["🔍 API METHOD"]
-        Method["check-no-public-access<br/><br/>Resource Type:<br/>AWS::S3::Bucket<br/><br/>Validates for public<br/>access patterns"]
+        Method["check-no-public-access<br/><br/>1. Get trusted principals<br/>2. Check policy principals<br/>3. Detect public patterns<br/>4. Return FAIL/PASS"]
     end
     
     subgraph PASS ["✅ POLICY THAT PASSES"]
@@ -2367,9 +2378,11 @@ flowchart LR
     end
     
     FAIL --> API
+    STORAGE --> API
     API --> PASS
     
     style FAIL fill:#ffebee,stroke:#f44336,stroke-width:2px
+    style STORAGE fill:#fff3e0,stroke:#ff9800,stroke-width:2px
     style API fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
     style PASS fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
 ```
@@ -2381,6 +2394,36 @@ flowchart LR
 - **Compliance**: Essential for data protection and regulatory requirements
 
 
+### Where is the Validation Logic Hosted?
+
+**AWS-Managed Service Logic:**
+- **Location**: AWS IAM Access Analyzer service (AWS-managed)
+- **No Custom Rules Storage**: AWS doesn't provide built-in "dangerous actions" lists
+- **Your Responsibility**: Define forbidden actions/resources in your code
+- **Runtime Validation**: Logic executed when you call the API
+
+```mermaid
+flowchart TD
+    subgraph "Your Application"
+        Code["Your Code<br/>Defines Rules"]
+        Rules["Forbidden Actions:<br/>- dynamodb:DeleteTable<br/>- s3:DeleteBucket<br/>- iam:DeleteRole"]
+    end
+    
+    subgraph "AWS IAM Access Analyzer"
+        API["Policy Check APIs"]
+        Engine["Validation Engine<br/>(AWS-Managed)"]
+    end
+    
+    Code --> API
+    Rules --> API
+    API --> Engine
+    Engine --> Result["PASS/FAIL/ERROR"]
+    
+    style Code fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
+    style Rules fill:#fff3e0,stroke:#ff9800,stroke-width:2px
+    style API fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+    style Engine fill:#f3e5f5,stroke:#9c27b0,stroke-width:2px
+```
 
 ## Conclusion
 
