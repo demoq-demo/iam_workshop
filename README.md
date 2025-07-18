@@ -2293,6 +2293,35 @@ flowchart LR
 - **False Positives**: Consider conditional access in policies
 - **Documentation**: Maintain clear lists of forbidden combinations
 
+```mermaid
+flowchart LR
+    subgraph FAIL ["❌ POLICY THAT FAILS"]
+        FailPolicy["Policy Document<br/>Action: dynamodb:GetItem<br/>Action: dynamodb:DeleteTable<br/>Resource: table/prod-*"]
+    end
+    
+    subgraph API ["🔍 API METHOD"]
+        Method["check-access-not-granted<br/><br/>Forbidden Actions:<br/>dynamodb:DeleteTable<br/><br/>Protected Resources:<br/>table/prod-*"]
+    end
+    
+    subgraph PASS ["✅ POLICY THAT PASSES"]
+        PassPolicy["Policy Document<br/>Action: dynamodb:GetItem<br/>Action: dynamodb:PutItem<br/>Resource: table/prod-*"]
+    end
+    
+    FAIL --> API
+    API --> PASS
+    
+    style FAIL fill:#ffebee,stroke:#f44336,stroke-width:2px
+    style API fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
+    style PASS fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+```
+
+**📋 Summary Notes:**
+- **FAILS**: Policy grants forbidden `dynamodb:DeleteTable` action on protected production tables
+- **PASSES**: Policy only grants safe read/write operations, no destructive actions
+- **Use Case**: Prevent dangerous operations on critical production resources
+- **Security**: Enforces organizational boundaries and prevents data loss
+
+
 #### check-no-public-access
 **Purpose**: Validates that a resource-based policy doesn't grant public access.
 
