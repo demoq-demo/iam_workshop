@@ -2348,7 +2348,33 @@ flowchart LR
 - **Conditional Access**: Considers policy conditions
 - **Integration**: Essential for S3 bucket policy validation
 
+```mermaid
+flowchart LR
+    subgraph FAIL ["❌ POLICY THAT FAILS"]
+        FailPolicy["S3 Bucket Policy<br/>Principal: *<br/>Action: s3:GetObject<br/>Resource: private-bucket/*"]
+    end
+    
+    subgraph API ["🔍 API METHOD"]
+        Method["check-no-public-access<br/><br/>Resource Type:<br/>AWS::S3::Bucket<br/><br/>Validates for public<br/>access patterns"]
+    end
+    
+    subgraph PASS ["✅ POLICY THAT PASSES"]
+        PassPolicy["S3 Bucket Policy<br/>Principal: AWS Account<br/>123456789012<br/>Action: s3:GetObject<br/>Resource: private-bucket/*"]
+    end
+    
+    FAIL --> API
+    API --> PASS
+    
+    style FAIL fill:#ffebee,stroke:#f44336,stroke-width:2px
+    style API fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
+    style PASS fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+```
 
+**📋 Summary Notes:**
+- **FAILS**: Policy uses wildcard principal `"*"` allowing public internet access
+- **PASSES**: Policy restricts access to specific AWS account, no public access
+- **Use Case**: Prevent accidental public exposure of sensitive S3 buckets
+- **Compliance**: Essential for data protection and regulatory requirements
 
 
 
