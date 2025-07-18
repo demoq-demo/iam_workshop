@@ -2236,6 +2236,7 @@ Custom policy checks are programmable validation rules that:
 - **Risk Management**: Prevent accidental permission escalation
 
 ```mermaid
+
 flowchart LR
     subgraph FAIL ["❌ POLICY THAT FAILS"]
         FailPolicy["New Policy<br/>Action: s3:GetObject<br/>Action: s3:PutObject<br/>Action: s3:DeleteObject<br/>Resource: my-bucket/*"]
@@ -2257,15 +2258,13 @@ flowchart LR
     style FAIL fill:#ffebee,stroke:#f44336,stroke-width:2px
     style API fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
     style PASS fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
-
+```
 
 **📋 Summary Notes:**
 - **FAILS**: New policy adds `s3:DeleteObject` permission not in reference policy
 - **PASSES**: New policy maintains same permissions as reference policy
 - **Use Case**: Prevent accidental permission escalation during policy updates
 - **Integration**: Essential for CI/CD policy validation workflows
-
----
 
 #### check-access-not-granted
 **Purpose**: Validates that a policy doesn't grant specific actions on specified resources.
