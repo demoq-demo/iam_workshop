@@ -2196,6 +2196,108 @@ def lambda_handler(event, context):
         handle_iam_finding(resource_arn, finding)
 ```
 
+
+
+## IAM Access Analyzer Custom Policy Checks (API)
+
+### Overview
+
+IAM Access Analyzer custom policy checks are API-based validation tools that allow you to programmatically validate IAM policies against specific security requirements and organizational standards. These checks go beyond basic policy validation to enforce custom security rules and compliance requirements.
+
+### What Are Custom Policy Checks?
+
+Custom policy checks are programmable validation rules that:
+- Analyze IAM policies for specific security patterns
+- Enforce organizational security standards
+- Validate policies against custom compliance requirements
+- Provide automated policy review capabilities
+- Generate detailed findings with remediation guidance
+
+### Core API Methods
+
+#### check-no-new-access
+**Purpose**: Validates that a policy change doesn't grant new permissions compared to a reference policy.
+
+**When to Use:**
+- Policy updates and modifications
+- Ensuring policy changes don't expand permissions
+- Maintaining least privilege during policy evolution
+- Compliance with change management processes
+
+**When NOT to Use:**
+- Initial policy creation (no reference policy exists)
+- Intentional permission expansion scenarios
+- Emergency access scenarios requiring rapid deployment
+
+**Use Cases:**
+- **Policy Updates**: Verify policy modifications don't grant additional access
+- **Version Control**: Compare policy versions during CI/CD
+- **Compliance**: Ensure changes meet approval requirements
+- **Risk Management**: Prevent accidental permission escalation
+
+**Engineer Notes:**
+- **Performance**: API calls have latency, cache results when possible
+- **Rate Limits**: Implement exponential backoff for API throttling
+- **Error Handling**: Handle policy parsing errors gracefully
+- **Integration**: Best used in CI/CD pipelines for automated validation
+
+#### check-access-not-granted
+**Purpose**: Validates that a policy doesn't grant specific actions on specified resources.
+
+**When to Use:**
+- Enforcing organizational security boundaries
+- Preventing access to sensitive resources
+- Validating compliance with security policies
+- Blocking dangerous permission combinations
+
+**When NOT to Use:**
+- Policies requiring the checked permissions for legitimate use
+- Emergency access policies
+- Break-glass scenarios
+
+**Use Cases:**
+- **Sensitive Resource Protection**: Prevent access to production databases
+- **Compliance Enforcement**: Block access to regulated data stores
+- **Security Boundaries**: Enforce environment separation
+- **Risk Mitigation**: Prevent dangerous action combinations
+
+
+**Engineer Notes:**
+- **Granular Control**: Check specific action-resource combinations
+- **Batch Processing**: Group multiple checks for efficiency
+- **False Positives**: Consider conditional access in policies
+- **Documentation**: Maintain clear lists of forbidden combinations
+
+#### check-no-public-access
+**Purpose**: Validates that a resource-based policy doesn't grant public access.
+
+**When to Use:**
+- S3 bucket policy validation
+- Resource-based policy security review
+- Preventing accidental public exposure
+- Compliance with data protection requirements
+
+**When NOT to Use:**
+- Intentionally public resources (websites, CDN content)
+- Public API endpoints
+- Open data sharing scenarios
+
+**Use Cases:**
+- **Data Protection**: Prevent accidental public S3 bucket exposure
+- **Compliance**: Meet regulatory requirements for data privacy
+- **Security Review**: Automated public access detection
+- **Risk Prevention**: Block unintended public resource sharing
+
+**Engineer Notes:**
+- **Resource Types**: Different validation rules per resource type
+- **Public Patterns**: Understands various public access patterns
+- **Conditional Access**: Considers policy conditions
+- **Integration**: Essential for S3 bucket policy validation
+
+
+
+
+
 ## Conclusion
 
 IAM Access Analyzer is a powerful tool for maintaining security posture by identifying unintended external access to your AWS resources. This workshop provides comprehensive examples and use cases to help you understand and implement Access Analyzer effectively in your environment.
