@@ -22,6 +22,8 @@ Zone of Trust defines the boundary of what Access Analyzer considers "internal" 
 - **Account Zone** - Your AWS account is the zone of trust
 - **Organization Zone** - Your AWS Organization is the zone of trust
 
+### Account Zone of Trust: 
+
 ``` mermaid
 graph TD
     subgraph "Account Zone (123456789012)"
@@ -47,7 +49,20 @@ graph TD
     style F fill:#ffebee,stroke:#f44336,stroke-width:2px
     style G fill:#ffebee,stroke:#f44336,stroke-width:2px
 ```
+#### What's Trusted (No Findings):
 
+Resources within the same AWS account
+IAM users/roles in your account
+Service-to-service access within account
+
+#### What Generates Findings:
+
+Access from different AWS accounts
+Public access (Principal: "*")
+Cross-account role assumptions
+
+
+### Organization Zone of Trust:
 ``` mermaid 
 graph TD
     subgraph "Organization Zone"
@@ -88,6 +103,20 @@ graph TD
     style F fill:#ffebee,stroke:#f44336,stroke-width:2px
 
 ```
+
+#### What's Trusted (No Findings):
+
+All accounts within the AWS Organization
+Cross-account access between member accounts
+Organization management account access
+
+#### What Generates Findings:
+
+Access from accounts outside the organization
+Public access (Principal: "*")
+External third-party access
+
+
 ## IAM Access Analyzer Use Cases
 
 ### 1. IAM Access Analyzer Features Distribution (Pie Chart)
