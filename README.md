@@ -2236,26 +2236,29 @@ Custom policy checks are programmable validation rules that:
 - **Risk Management**: Prevent accidental permission escalation
 
 ```mermaid
-
-flowchart LR
+flowchart TD
     subgraph FAIL ["❌ POLICY THAT FAILS"]
         FailPolicy["New Policy<br/>Action: s3:GetObject<br/>Action: s3:PutObject<br/>Action: s3:DeleteObject<br/>Resource: my-bucket/*"]
-        RefPolicy1["Reference Policy<br/>Action: s3:GetObject<br/>Action: s3:PutObject<br/>Resource: my-bucket/*"]
+    end
+    
+    subgraph STORAGE ["📦 REFERENCE STORAGE"]
+        S3Config["S3 Bucket<br/>policy-references/<br/>team-a-policy-v1.json<br/><br/>Reference Policy:<br/>s3:GetObject<br/>s3:PutObject"]
     end
     
     subgraph API ["🔍 API METHOD"]
-        Method["check-no-new-access<br/><br/>Compares new policy<br/>against reference<br/>to detect permission<br/>expansion"]
+        Method["check-no-new-access<br/><br/>1. Fetch reference from S3<br/>2. Compare policies<br/>3. Detect new permissions<br/>4. Return FAIL/PASS"]
     end
     
     subgraph PASS ["✅ POLICY THAT PASSES"]
         PassPolicy["New Policy<br/>Action: s3:GetObject<br/>Action: s3:PutObject<br/>Resource: my-bucket/*"]
-        RefPolicy2["Reference Policy<br/>Action: s3:GetObject<br/>Action: s3:PutObject<br/>Resource: my-bucket/*"]
     end
     
     FAIL --> API
+    STORAGE --> API
     API --> PASS
     
     style FAIL fill:#ffebee,stroke:#f44336,stroke-width:2px
+    style STORAGE fill:#fff3e0,stroke:#ff9800,stroke-width:2px
     style API fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
     style PASS fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
 ```
@@ -2265,6 +2268,7 @@ flowchart LR
 - **PASSES**: New policy maintains same permissions as reference policy
 - **Use Case**: Prevent accidental permission escalation during policy updates
 - **Integration**: Essential for CI/CD policy validation workflows
+
 
 #### check-access-not-granted
 **Purpose**: Validates that a policy doesn't grant specific actions on specified resources.
