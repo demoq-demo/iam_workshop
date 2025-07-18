@@ -22,6 +22,7 @@ Zone of Trust defines the boundary of what Access Analyzer considers "internal" 
 - **Account Zone** - Your AWS account is the zone of trust
 - **Organization Zone** - Your AWS Organization is the zone of trust
 
+``` mermaid
 graph TD
     subgraph "Account Zone (123456789012)"
         A[Your AWS Account]
@@ -45,8 +46,48 @@ graph TD
     style A fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
     style F fill:#ffebee,stroke:#f44336,stroke-width:2px
     style G fill:#ffebee,stroke:#f44336,stroke-width:2px
+```
 
+``` mermaid 
+graph TD
+    subgraph "Organization Zone"
+        subgraph "Management Account (111111111111)"
+            A[Org Management]
+        end
+        
+        subgraph "Member Account 1 (222222222222)"
+            B[Production Resources]
+        end
+        
+        subgraph "Member Account 2 (333333333333)"
+            C[Development Resources]
+        end
+        
+        subgraph "Member Account 3 (444444444444)"
+            D[Security Tools]
+        end
+    end
+    
+    subgraph "External (Outside Organization)"
+        E[External AWS Account<br/>999999999999]
+        F[Public Internet<br/>Principal: *]
+    end
+    
+    A -.->|TRUSTED| B
+    B -.->|TRUSTED| C
+    C -.->|TRUSTED| D
+    
+    B -->|FINDING| E
+    C -->|FINDING| F
+    
+    style A fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+    style B fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+    style C fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+    style D fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+    style E fill:#ffebee,stroke:#f44336,stroke-width:2px
+    style F fill:#ffebee,stroke:#f44336,stroke-width:2px
 
+```
 ## IAM Access Analyzer Use Cases
 
 ### 1. IAM Access Analyzer Features Distribution (Pie Chart)
