@@ -49,13 +49,13 @@ graph TD
     style F fill:#ffebee,stroke:#f44336,stroke-width:2px
     style G fill:#ffebee,stroke:#f44336,stroke-width:2px
 ```
-#### What's Trusted (No Findings):
+#### What's Trusted (No Findings): external analyzer
 
 Resources within the same AWS account
 IAM users/roles in your account
 Service-to-service access within account
 
-#### What Generates Findings:
+#### What Generates Findings: external analyzer
 
 Access from different AWS accounts
 Public access (Principal: "*")
@@ -104,13 +104,13 @@ graph TD
 
 ```
 
-#### What's Trusted (No Findings):
+#### What's Trusted (No Findings):external analyzer
 
 All accounts within the AWS Organization
 Cross-account access between member accounts
 Organization management account access
 
-#### What Generates Findings:
+#### What Generates Findings: external analyzer
 
 Access from accounts outside the organization
 Public access (Principal: "*")
